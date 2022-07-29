@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, Header, Container, Group, Burger, Paper, Transition } from '@mantine/core';
+import {
+  createStyles,
+  Header,
+  Container,
+  Group,
+  Burger,
+  Paper,
+  Transition,
+  Button,
+  Box,
+  ActionIcon,
+  Text,
+} from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
-import { HomeHeaderLinks } from 'constants/HomeHeader';
+import { AuthHeaderLinks, HomeHeaderLinks } from 'constants/HomeHeader';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import AuthLinks from '../Auth/AuthLinks';
+import { useSession } from 'next-auth/react';
+import { handleLogout } from 'src/utils/auth';
+import { Logout } from 'tabler-icons-react';
 
 const HEADER_HEIGHT = 80;
 
@@ -38,7 +53,7 @@ const useStyles = createStyles((theme, { visible, isTop, opened }: HeaderProps) 
     borderTopLeftRadius: 0,
     borderTopWidth: 0,
     overflow: 'hidden',
-    backgroundColor: 'rgba(182, 182, 182, 0.2)',
+    backgroundColor: 'rgba(9, 18, 68, 0.98)',
     backdropFilter: 'blur(16px) contrast(.99)',
     [theme.fn.largerThan('sm')]: {
       display: 'none',
@@ -71,15 +86,14 @@ const useStyles = createStyles((theme, { visible, isTop, opened }: HeaderProps) 
     padding: '8px 12px',
     borderRadius: theme.radius.sm,
     textDecoration: 'none',
-    // color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     fontSize: theme.fontSizes.md,
     fontWeight: 700,
     letterSpacing: 3,
     color: 'white',
+    textAlign: 'center',
     '&:hover': {
       textDecoration: 'underline',
     },
-
     [theme.fn.smallerThan('sm')]: {
       borderRadius: 0,
       padding: theme.spacing.md,
@@ -102,7 +116,7 @@ export default function HomeHeader() {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [isTop, setIsTop] = useState(true);
   const [opened, toggleOpened] = useToggle([false, true]);
-
+  const { data, status } = useSession();
   const { classes, cx } = useStyles({ visible, isTop, opened });
 
   const router = useRouter();
@@ -114,8 +128,6 @@ export default function HomeHeader() {
     } else {
       setIsTop(true);
     }
-    // set state based on location info (explained in more detail below)
-
     // set state to new scroll position
     setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 40);
     setPrevScrollPos(currentScrollPos);
@@ -128,7 +140,18 @@ export default function HomeHeader() {
   }, [visible, prevScrollPos, handleScroll]);
 
   const items = HomeHeaderLinks.map((link) => (
-    <Link passHref href={link.href} key={link.href}>
+    <Link href={link.href} key={link.href} passHref>
+      <a
+        key={link.label}
+        className={cx(classes.link, { [classes.linkActive]: router.asPath === link.href })}
+      >
+        {link.label}
+      </a>
+    </Link>
+  ));
+
+  const authItems = AuthHeaderLinks.map((link) => (
+    <Link href={link.href} key={link.href} passHref>
       <a
         key={link.label}
         className={cx(classes.link, { [classes.linkActive]: router.asPath === link.href })}
@@ -159,6 +182,17 @@ export default function HomeHeader() {
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
               {items}
+              {status === 'authenticated' ? (
+                <>
+                  {authItems}
+                  <Group onClick={handleLogout} position="center" spacing="xs">
+                    <Text className={cx(classes.link)}>Logout</Text>
+                    <ActionIcon>
+                      <Logout />
+                    </ActionIcon>
+                  </Group>
+                </>
+              ) : null}
             </Paper>
           )}
         </Transition>

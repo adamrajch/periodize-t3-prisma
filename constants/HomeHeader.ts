@@ -7,3 +7,8 @@ export const HomeHeaderLinks: BasicHeaderLinks[] = [
     label: 'about',
   },
 ];
+
+export const AuthHeaderLinks: BasicHeaderLinks[] = [
+  { href: '/dashboard', label: 'dashboard' },
+  { href: '/settings', label: 'settings' },
+];

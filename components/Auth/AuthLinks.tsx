@@ -1,23 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { signIn, useSession, signOut } from 'next-auth/react';
-import { ActionIcon, Avatar, Button, Group, Menu, Text, UnstyledButton } from '@mantine/core';
+import { ActionIcon, Avatar, Group, Menu, UnstyledButton } from '@mantine/core';
 import { Dashboard, Login, Logout, Settings, Trash } from 'tabler-icons-react';
+import { handleLogout, handleSignIn } from 'src/utils/auth';
 
 export default function AuthLinks() {
   const { data, status } = useSession();
-  console.log('rendered');
-  const handleSignIn = async () => {
-    await signIn('github', {
-      callbackUrl: 'http://localhost:3000/dashboard',
-    });
-  };
-
-  const handleLogout = async () => {
-    await signOut({
-      callbackUrl: 'http://localhost:3000/',
-    });
-  };
 
   return (
     <>
@@ -37,11 +26,15 @@ export default function AuthLinks() {
             <Menu.Dropdown>
               <Menu.Label>Application</Menu.Label>
               <Link href="dashboard" passHref>
-                <Menu.Item icon={<Dashboard size={14} />}>Dashboard</Menu.Item>
+                <Menu.Item icon={<Dashboard size={14} />} component="a">
+                  Dashboard
+                </Menu.Item>
               </Link>
 
               <Link href="dashboard" passHref>
-                <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
+                <Menu.Item icon={<Settings size={14} />} component="a">
+                  Settings
+                </Menu.Item>
               </Link>
               <Menu.Divider />
               <Menu.Item color="red" icon={<Logout size={14} />} onClick={handleLogout}>

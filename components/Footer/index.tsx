@@ -6,6 +6,7 @@ import { BasicFooterLinks } from 'constants/BasicFooter';
 const useStyles = createStyles((theme) => ({
   footer: {
     marginTop: 120,
+    background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
     borderTop: `1px solid ${
       theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
@@ -16,7 +17,6 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: `${theme.spacing.md}px ${theme.spacing.md}px`,
-
     [theme.fn.smallerThan('sm')]: {
       flexDirection: 'column',
     },
