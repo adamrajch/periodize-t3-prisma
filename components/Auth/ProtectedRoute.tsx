@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   useEffect(() => {
     if (status === 'unauthenticated') {
       // redirect to login page once completed
-      router.push('/');
+      router.push('/login');
     }
   }, [router, status]);
 

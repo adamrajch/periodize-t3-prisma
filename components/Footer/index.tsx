@@ -52,9 +52,6 @@ export default function DashboardFooter() {
         <Group className={classes.links}>{items}</Group>
         <Group spacing={0} position="right" noWrap>
           <ActionIcon size="lg">
-            <BrandTwitter size={18} />
-          </ActionIcon>
-          <ActionIcon size="lg">
             <BrandYoutube size={18} />
           </ActionIcon>
           <ActionIcon size="lg">

@@ -14,6 +14,53 @@ model Example {
     id String @id @default(cuid())
 }
 
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+	lifts		  LiftsOnUsers[]
+}
+
+model Lift{
+    id  String  @id @default(uuid())
+    createdAt DateTime  @default(now())
+	updatedAt DateTime  @default(now())
+    name String  @unique
+	user LiftsOnUsers[]
+    categories  CategoriesOnLifts[]
+    default Boolean  
+}
+
+model LiftsOnUsers{
+	lift Lift @relation(fields: [liftId], references: [id])
+	liftId     String
+	user User @relation(fields: [userId], references: [id])
+	userId String
+	assignedAt DateTime @default(now())
+  	assignedBy String
+	@@id([liftId, userId])
+}
+model LiftCategory{
+    id  Int @id @default(autoincrement())
+    name String
+    lifts CategoriesOnLifts[]
+}
+
+model CategoriesOnLifts {
+  lift       Lift     @relation(fields: [liftId], references: [id])
+  liftId     String // relation scalar field (used in the `@relation` attribute above)
+  category   LiftCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([liftId, categoryId])
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -40,16 +87,6 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
 }
 
 model VerificationToken {

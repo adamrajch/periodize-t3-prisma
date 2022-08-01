@@ -13,7 +13,11 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
 
   return (
     <>
-      {authRoutes.includes(router.pathname) ? <ProtectedRoute>children</ProtectedRoute> : children}
+      {authRoutes.includes(router.pathname) ? (
+        <ProtectedRoute>{children}</ProtectedRoute>
+      ) : (
+        children
+      )}
     </>
   );
 }

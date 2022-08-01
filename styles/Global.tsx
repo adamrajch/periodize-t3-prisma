@@ -11,6 +11,7 @@ export default function GlobalStyles() {
 
         html: {
           minHeight: '100%',
+          height: '100%',
         },
 
         body: {

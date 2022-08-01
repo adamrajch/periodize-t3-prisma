@@ -91,7 +91,7 @@ export default function AppShellDemo({ children }: ShellProps) {
       }
     >
       <Box className={classes.content}>{children}</Box>
-      <DashboardFooter />
+      {/* <DashboardFooter /> */}
     </AppShell>
   );
 }

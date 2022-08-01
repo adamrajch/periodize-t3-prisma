@@ -205,7 +205,7 @@ export default function LiftTable({ data }: TableSortProps) {
           </tbody>
         </Table>
       </ScrollArea>
-      <Pagination total={10} />
+      <Pagination total={10} withControls={false} />
     </>
   );
 }
