@@ -13,10 +13,18 @@ export const authRouter = createRouter()
     if (!ctx.session) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-    return next();
+    return next({
+      ctx: {
+        ...ctx,
+        // infers that `session` is non-nullable to downstream resolvers
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
   })
-  .query('getSecretMessage', {
+  .query('getUser', {
     async resolve({ ctx }) {
-      return 'You are logged in and can see this secret message!';
+      return await ctx.prisma.user.findFirst({
+        where: { id: ctx.user?.id },
+      });
     },
   });

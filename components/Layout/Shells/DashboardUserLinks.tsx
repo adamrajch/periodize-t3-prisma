@@ -10,7 +10,8 @@ import {
 import { createStyles, Box, NavLink } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Dashboard } from 'tabler-icons-react';
+import DashboardCreateProgram from './DashboardCreateProgram';
+import AddContentModal from '@/components/AddContentModal';
 
 interface DashboardChildLinkProps {
   icon?: React.ReactNode;
@@ -59,7 +60,7 @@ function MainLink({ icon, color, label, href, children }: DashboardLinkProps) {
           className={classes.navLink}
         >
           {children?.map((child) => (
-            <Link href={child.href} passHref>
+            <Link href={child.href} key={child.href} passHref>
               <NavLink label={child.label} icon={child.icon} className={classes.link} />
             </Link>
           ))}
@@ -70,7 +71,7 @@ function MainLink({ icon, color, label, href, children }: DashboardLinkProps) {
   return (
     <NavLink label={label} icon={icon} childrenOffset={28}>
       {children?.map((child) => (
-        <Link href={child.href} passHref>
+        <Link href={child.href} key={child.href} passHref>
           <NavLink label={child.label} icon={child.icon} component="a" className={classes.link} />
         </Link>
       ))}
@@ -99,29 +100,6 @@ const data: DashboardLinkProps[] = [
     ],
   },
   {
-    icon: <IconCirclePlus size={16} stroke={1.5} />,
-    color: 'teal',
-    label: 'Create',
-    href: '/dashboard/create',
-    children: [
-      {
-        color: 'teal',
-        label: 'Program',
-        href: '/dashboard/create/program',
-      },
-      {
-        color: 'teal',
-        label: 'Split',
-        href: '/dashboard/create/split',
-      },
-      {
-        color: 'teal',
-        label: 'Routine',
-        href: '/dashboard/create/routine',
-      },
-    ],
-  },
-  {
     icon: <IconCalendar size={16} stroke={1.5} />,
     color: 'violet',
     label: 'Calendar',
@@ -142,6 +120,11 @@ const data: DashboardLinkProps[] = [
 ];
 
 export default function DashboardUserLinks() {
-  const links = data.map((link) => <MainLink {...link} key={link.label} />);
-  return <Box>{links}</Box>;
+  const links = data.map((link) => <MainLink key={link.href} {...link} />);
+  return (
+    <Box>
+      {links}
+      <AddContentModal />
+    </Box>
+  );
 }

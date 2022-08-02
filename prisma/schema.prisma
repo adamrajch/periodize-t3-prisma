@@ -2,97 +2,69 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+	provider = "prisma-client-js"
+	previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-    provider = "postgresql" // NOTE: sqlite does not work with NextAuth.js
-    url      = env("DATABASE_URL")
+	provider = "postgresql" // NOTE: sqlite does not work with NextAuth.js
+	url      = env("DATABASE_URL")
 }
 
 model Example {
-    id String @id @default(cuid())
+	id String @id @default(cuid())
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-	lifts		  LiftsOnUsers[]
+	id            String    @id @default(cuid())
+	name          String?
+	email         String?   @unique
+	emailVerified DateTime?
+	image         String?
+	accounts      Account[]
+	sessions      Session[]
+	programs      Program[]
 }
 
-model Lift{
-    id  String  @id @default(uuid())
-    createdAt DateTime  @default(now())
-	updatedAt DateTime  @default(now())
-    name String  @unique
-	user LiftsOnUsers[]
-    categories  CategoriesOnLifts[]
-    default Boolean  
+model Program{
+	id          String  @id @default(uuid())
+	name        String	@unique
+	description String?
+    author		User	@relation(fields:[authorId], references:[id])
+	authorId	String 
 }
-
-model LiftsOnUsers{
-	lift Lift @relation(fields: [liftId], references: [id])
-	liftId     String
-	user User @relation(fields: [userId], references: [id])
-	userId String
-	assignedAt DateTime @default(now())
-  	assignedBy String
-	@@id([liftId, userId])
-}
-model LiftCategory{
-    id  Int @id @default(autoincrement())
-    name String
-    lifts CategoriesOnLifts[]
-}
-
-model CategoriesOnLifts {
-  lift       Lift     @relation(fields: [liftId], references: [id])
-  liftId     String // relation scalar field (used in the `@relation` attribute above)
-  category   LiftCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int // relation scalar field (used in the `@relation` attribute above)
-  assignedAt DateTime @default(now())
-  assignedBy String
-
-  @@id([liftId, categoryId])
-}
-
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String?
-    refresh_token_expires_in  Int?
-    access_token      String?
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String?
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+	id                String  @id @default(cuid())
+	userId            String
+	type              String
+	provider          String
+	providerAccountId String
+	refresh_token     String?
+	refresh_token_expires_in  Int?
+	access_token      String?
+	expires_at        Int?
+	token_type        String?
+	scope             String?
+	id_token          String?
+	session_state     String?
+	user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+	@@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	id           String   @id @default(cuid())
+	sessionToken String   @unique
+	userId       String
+	expires      DateTime
+	user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+	identifier String
+	token      String   @unique
+	expires    DateTime
 
-    @@unique([identifier, token])
+	@@unique([identifier, token])
 }

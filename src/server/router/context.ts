@@ -10,12 +10,16 @@ export const createContext = async (opts?: trpcNext.CreateNextContextOptions) =>
   const res = opts?.res;
 
   const session = req && res && (await getServerSession(req, res, nextAuthOptions));
-
+  const user = session?.user;
+  //    ^? User | undefined
+  const userId = user?.id;
   return {
     req,
     res,
     session,
     prisma,
+    user,
+    userId,
   };
 };
 

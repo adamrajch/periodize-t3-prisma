@@ -1,29 +1,30 @@
-import { useState } from 'react';
+import AuthWrapper from '@/components/Auth/AuthWrapper';
+import { ColorSchemeProvider, createEmotionCache, MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
+import { NotificationsProvider } from '@mantine/notifications';
+import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
+import { loggerLink } from '@trpc/client/links/loggerLink';
+import { withTRPC } from '@trpc/next';
+import { setCookies } from 'cookies-next';
+import { GetServerSidePropsContext } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { GetServerSidePropsContext } from 'next';
-import { ColorSchemeProvider, createEmotionCache, MantineProvider } from '@mantine/core';
-import { NotificationsProvider } from '@mantine/notifications';
-import { getCookie, setCookies } from 'cookies-next';
-import { SessionProvider } from 'next-auth/react';
+import { useState } from 'react';
 import GlobalStyles from 'styles/Global';
-import { rtlCache } from 'styles/rtl-cache';
-import AuthWrapper from '@/components/Auth/AuthWrapper';
-import { withTRPC } from '@trpc/next';
-import type { AppRouter } from '../server/router';
 import superjson from 'superjson';
-import { loggerLink } from '@trpc/client/links/loggerLink';
-import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
+import type { AppRouter } from '../server/router';
 
 function App(props: AppProps & { colorScheme: any }) {
   const { Component, pageProps } = props;
 
-  const [colorScheme, setColorScheme] = useState<any>(props.colorScheme);
+  const [colorScheme, setColorScheme] = useState<any>('dark');
 
   const toggleColorScheme = (value?: any) => {
     const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(nextColorScheme);
     setCookies('mantine-color-scheme', nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
+    // setColorScheme('dark');
   };
 
   const myCache = createEmotionCache({ key: 'mantine' });
@@ -38,18 +39,20 @@ function App(props: AppProps & { colorScheme: any }) {
 
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider
-          theme={{ colorScheme, dir: 'rtl' }}
+          theme={{ colorScheme: 'dark' }}
           withGlobalStyles
           withNormalizeCSS
           emotionCache={myCache}
         >
           <GlobalStyles />
           <NotificationsProvider>
-            <SessionProvider session={pageProps?.session}>
-              <AuthWrapper>
-                <Component {...pageProps} />
-              </AuthWrapper>
-            </SessionProvider>
+            <ModalsProvider>
+              <SessionProvider session={pageProps?.session}>
+                <AuthWrapper>
+                  <Component {...pageProps} />
+                </AuthWrapper>
+              </SessionProvider>
+            </ModalsProvider>
           </NotificationsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
@@ -58,7 +61,8 @@ function App(props: AppProps & { colorScheme: any }) {
 }
 
 App.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
-  colorScheme: getCookie('mantine-color-scheme', ctx) || 'dark',
+  // colorScheme: getCookie('mantine-color-scheme', ctx) || 'dark',
+  colorScheme: 'dark',
 });
 
 const getBaseUrl = () => {

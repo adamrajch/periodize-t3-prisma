@@ -41,7 +41,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function AppShellDemo({ children }: ShellProps) {
+export default function DashboardShell({ children }: ShellProps) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { classes } = useStyles();
