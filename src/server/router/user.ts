@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
+import * as trpc from '@trpc/server';
 import { createProgramScehma } from 'src/schema/program.schema';
 import { createRouter } from './context';
-import * as trpc from '@trpc/server';
 
 export const userRouter = createRouter().mutation('create-program', {
   input: createProgramScehma,

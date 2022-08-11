@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export const createProgramScehma = z.object({
-  name: z
+  title: z
     .string()
     .min(2, 'Minimum name length is 2 characters')
     .max(30, 'Max name length is 20 characters'),
