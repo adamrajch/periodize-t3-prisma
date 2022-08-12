@@ -1,17 +1,9 @@
-import React from 'react';
-import {
-  IconBarbell,
-  IconCalendar,
-  IconCirclePlus,
-  IconDashboard,
-  IconEdit,
-  IconTrophy,
-} from '@tabler/icons';
-import { createStyles, Box, NavLink } from '@mantine/core';
+import AddContentModal from '@/components/AddContentModal';
+import { Box, createStyles, NavLink } from '@mantine/core';
+import { IconBarbell, IconCalendar, IconDashboard, IconEdit, IconTrophy } from '@tabler/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import DashboardCreateProgram from './DashboardCreateProgram';
-import AddContentModal from '@/components/AddContentModal';
+import React from 'react';
 
 interface DashboardChildLinkProps {
   icon?: React.ReactNode;

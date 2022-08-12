@@ -1,16 +1,8 @@
-import React from 'react';
-import {
-  GitPullRequest,
-  AlertCircle,
-  Messages,
-  Database,
-  Dashboard,
-  Calendar,
-  Books,
-} from 'tabler-icons-react';
-import { ThemeIcon, UnstyledButton, Group, Anchor, createStyles } from '@mantine/core';
+import { Anchor, createStyles, Group, ThemeIcon, UnstyledButton } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import React from 'react';
+import { AlertCircle, Books, Dashboard, Database } from 'tabler-icons-react';
 
 interface DashboardLinkProps {
   icon: React.ReactNode;
@@ -66,7 +58,7 @@ const data: DashboardLinkProps[] = [
     icon: <AlertCircle size={16} />,
     color: 'teal',
     label: 'Programs',
-    href: '/dashboard/programs',
+    href: 'programs',
   },
 
   {

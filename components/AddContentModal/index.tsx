@@ -1,4 +1,4 @@
-import { Button, Code, Group, Modal, Stack, Stepper, Text, TextInput } from '@mantine/core';
+import { Box, Button, Code, Group, Modal, Stack, Stepper, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconPlus } from '@tabler/icons';
 import { useState } from 'react';
@@ -106,15 +106,16 @@ export default function AddContentModal() {
           <Stepper active={active} breakpoint="sm">
             <Stepper.Step label="Format">
               <Stack>
-                {contentTypes.map((c: any) => (
-                  <ContentFormCheckboxCard
-                    key={c.name}
-                    title={c.name}
-                    field={c.name}
-                    description={c.description}
-                    handleCheckBoxChange={handleCheckBoxChange}
-                    isChecked={form.values.type === c.name}
-                  />
+                {contentTypes.map((c: any, i: number) => (
+                  <Box key={i}>
+                    <ContentFormCheckboxCard
+                      title={c.name}
+                      field={c.name}
+                      description={c.description}
+                      handleCheckBoxChange={handleCheckBoxChange}
+                      isChecked={form.values.type === c.name}
+                    />
+                  </Box>
                 ))}
               </Stack>
             </Stepper.Step>

@@ -25,7 +25,6 @@ interface CheckboxCardProps {
   handleCheckBoxChange: any;
   field: string;
   isChecked: boolean;
-  key: any;
 }
 
 export default function ContentFormCheckboxCard({
@@ -38,7 +37,6 @@ export default function ContentFormCheckboxCard({
   handleCheckBoxChange,
   field,
   isChecked,
-  key,
   ...others
 }: CheckboxCardProps & Omit<React.ComponentPropsWithoutRef<'button'>, keyof CheckboxCardProps>) {
   const { classes, cx } = useStyles({ isChecked });

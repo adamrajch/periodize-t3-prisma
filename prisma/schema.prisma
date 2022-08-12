@@ -32,6 +32,8 @@ model Program{
 	description String?
     author		User	@relation(fields:[authorId], references:[id])
 	authorId	String 
+	isPublic	Boolean @default(false)
+	tags		String[]
 }
 // Necessary for Next auth
 model Account {
