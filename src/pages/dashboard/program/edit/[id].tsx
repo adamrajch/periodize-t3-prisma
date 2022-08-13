@@ -1,5 +1,6 @@
+import DashboardShell from '@/components/Dashboard';
 import DetailsForm from '@/components/EditProgram/DetailsForm';
-import DashboardShell from '@/components/Layout/Shells/DashboardShell';
+
 import { Container, Tabs, Title } from '@mantine/core';
 import { IconMessageCircle, IconPhoto, IconSettings } from '@tabler/icons';
 import NextError from 'next/error';

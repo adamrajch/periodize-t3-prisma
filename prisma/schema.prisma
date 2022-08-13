@@ -26,6 +26,31 @@ model User {
 	programs      Program[]
 }
 
+// type ProgramLift{
+// 	name	String
+// }
+
+// type ProgramDay{
+// 	name	String
+// 	summary	String?
+// }
+ 
+// type ProgramWeek{
+// 	name	String
+// 	summary	String?
+// 	days	ProgramDay[]
+// }
+
+// type ProgramBlock{
+// 	name	String
+// 	summary	String
+// 	weeks	ProgramWeek[]
+// }
+
+// type ProgramSchema{
+// 	blocks	ProgramBlock[]	 
+// }
+
 model Program{
 	id          String  @id @default(uuid())
 	title       String	
@@ -34,6 +59,8 @@ model Program{
 	authorId	String 
 	isPublic	Boolean @default(false)
 	tags		String[]
+	// schema		ProgramSchema
+	
 }
 // Necessary for Next auth
 model Account {

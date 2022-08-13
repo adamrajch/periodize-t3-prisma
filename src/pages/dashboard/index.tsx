@@ -1,5 +1,4 @@
-import React from 'react';
-import DashboardShell from '@/components/Layout/Shells/DashboardShell';
+import DashboardShell from '@/components/Dashboard';
 
 export default function DashboardHome() {
   return (

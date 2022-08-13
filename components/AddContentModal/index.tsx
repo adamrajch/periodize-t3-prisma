@@ -1,4 +1,15 @@
-import { Box, Button, Code, Group, Modal, Stack, Stepper, Text, TextInput } from '@mantine/core';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Center,
+  Code,
+  Group,
+  Modal,
+  Stack,
+  Stepper,
+  TextInput,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconPlus } from '@tabler/icons';
 import { useState } from 'react';
@@ -152,13 +163,25 @@ export default function AddContentModal() {
         </form>
       </Modal>
 
-      <Group position="center">
-        <Button leftIcon={<IconPlus size={16} />} onClick={() => setOpened(true)}>
-          <Group>
-            <Text>Create</Text>
-          </Group>
-        </Button>
-      </Group>
+      <Center>
+        <ActionIcon
+          onClick={() => setOpened(true)}
+          variant="filled"
+          sx={(theme) => ({
+            // width: 50,
+            // height: 50,
+            backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+              .background,
+            color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
+            borderRadius: theme.radius.md,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          })}
+        >
+          <IconPlus stroke={1.5} />
+        </ActionIcon>
+      </Center>
     </>
   );
 }
