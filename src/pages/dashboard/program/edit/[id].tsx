@@ -1,4 +1,5 @@
 import DashboardShell from '@/components/Dashboard';
+import EditProgramForm from '@/components/EditProgram';
 import DetailsForm from '@/components/EditProgram/DetailsForm';
 
 import { Container, Tabs, Title } from '@mantine/core';
@@ -29,7 +30,7 @@ export default function EditProgramPage() {
     <DashboardShell>
       {data ? <Title mb={20}>{data?.title}</Title> : <div>no program</div>}
       <Tabs orientation="vertical" defaultValue="gallery">
-        <Tabs.List grow>
+        <Tabs.List>
           <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
             Details
           </Tabs.Tab>
@@ -53,7 +54,7 @@ export default function EditProgramPage() {
         </Tabs.Panel>
 
         <Tabs.Panel value="messages" pl="xs">
-          Messages tab content
+          <EditProgramForm data={data} yolo={data} />
         </Tabs.Panel>
 
         <Tabs.Panel value="settings" pl="xs">

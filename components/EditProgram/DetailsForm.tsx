@@ -14,7 +14,11 @@ interface DetailsFormProps {
 export default function DetailsForm({ title, description, isPublic, tags }: DetailsFormProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const utils = trpc.useContext();
-  const mutation = trpc.useMutation(['program.editProgram']);
+  const mutation = trpc.useMutation(['program.editProgram'], {
+    onSuccess() {
+      utils.invalidateQueries(['program.getUserPrograms']);
+    },
+  });
   const id = useRouter().query.id as string;
   const form = useForm({
     initialValues: {
@@ -29,17 +33,17 @@ export default function DetailsForm({ title, description, isPublic, tags }: Deta
 
   async function handleFormSubmit(values: FormValues) {
     setLoading(true);
-    setTimeout(() => {
-      console.log(values);
 
+    try {
       mutation.mutate({
         id,
         data: {
           ...values,
         },
       });
-      setLoading(false);
-    }, 1000);
+    } catch (err) {
+      console.log(err);
+    }
   }
   return (
     <form onSubmit={form.onSubmit((values: FormValues) => handleFormSubmit(values))}>

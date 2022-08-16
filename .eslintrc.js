@@ -20,5 +20,6 @@ module.exports = {
     'no-console': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/return-await': 'off',
+    'no-alert': 'off',
   },
 };

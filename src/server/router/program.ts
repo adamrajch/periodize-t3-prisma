@@ -7,13 +7,6 @@ export const programRouter = createProtectedRouter()
   .mutation('create-program', {
     input: createProgramScehma,
     async resolve({ ctx, input }) {
-      // if (!ctx.session?.user || !ctx.userId) {
-      //   return new trpc.TRPCError({
-      //     code: 'FORBIDDEN',
-      //     message: 'Can not create a lift while logged out',
-      //   });
-      // }
-
       const program = await ctx.prisma.user.update({
         where: {
           id: ctx.userId,
@@ -85,6 +78,20 @@ export const programRouter = createProtectedRouter()
         },
         data: {
           ...input.data,
+        },
+      });
+
+      return program;
+    },
+  })
+  .mutation('deleteProgram', {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const program = await ctx.prisma.program.delete({
+        where: {
+          id: input.id,
         },
       });
 

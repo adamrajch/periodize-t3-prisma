@@ -1,45 +1,21 @@
-import DashboardShell from '@/components/Layout/Shells/DashboardShell';
-import { ActionIcon, Card, Group, Image, SimpleGrid, Text } from '@mantine/core';
-import { IconEdit } from '@tabler/icons';
+import DashboardShell from '@/components/Dashboard';
+import { ActionIcon, Container, Group, Table, Text, Title } from '@mantine/core';
+import { openConfirmModal } from '@mantine/modals';
+import { IconEdit, IconTrash } from '@tabler/icons';
 import NextError from 'next/error';
 import Link from 'next/link';
 import { trpc } from 'src/utils/trpc';
 
-const mockData = [
-  {
-    position: 6,
-    mass: 12.011,
-    symbol: 'C',
-    name: 'Carbon',
-  },
-  {
-    position: 7,
-    mass: 14.007,
-    symbol: 'N',
-    name: 'Nitrogen',
-  },
-  {
-    position: 39,
-    mass: 88.906,
-    symbol: 'Y',
-    name: 'Yttrium',
-  },
-  {
-    position: 56,
-    mass: 137.33,
-    symbol: 'Ba',
-    name: 'Barium',
-  },
-  {
-    position: 58,
-    mass: 140.12,
-    symbol: 'Ce',
-    name: 'Cerium',
-  },
-];
-
 export default function ProgramsHome() {
   const { data, status, error } = trpc.useQuery(['program.getUserPrograms']);
+
+  const utils = trpc.useContext();
+  const deleteMutation = trpc.useMutation(['program.deleteProgram'], {
+    onSuccess({ id }) {
+      utils.invalidateQueries(['program.getUserPrograms']);
+      // utils.invalidateQueries(['program.getById', id]);
+    },
+  });
 
   if (error) {
     return <NextError title={error.message} statusCode={error.data?.httpStatus ?? 500} />;
@@ -48,37 +24,65 @@ export default function ProgramsHome() {
   if (status !== 'success') {
     return <>Loading...</>;
   }
-  console.log(data);
+
+  async function handleDeleteProgram(id: string) {
+    try {
+      await deleteMutation.mutate({ id });
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  const rows = data.map((p) => {
+    const openModal = () =>
+      openConfirmModal({
+        title: 'Please confirm your action',
+        children: <Text size="sm">Are you sure you want to delete this program?</Text>,
+        labels: { confirm: 'Confirm', cancel: 'Cancel' },
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => handleDeleteProgram(p.id),
+      });
+
+    return (
+      <tr key={p.id}>
+        <td>{p.title}</td>
+        <td>{p.createdAt.toLocaleDateString()}</td>
+        <td>{p.updatedAt !== p.createdAt ? '-' : p.updatedAt.toISOString()}</td>
+        <td>
+          <Group>
+            <Link passHref href={`/dashboard/program/edit/${p.id}`}>
+              <ActionIcon size="sm">
+                <IconEdit />
+              </ActionIcon>
+            </Link>
+            <>
+              <Group position="center">
+                <ActionIcon size="sm" onClick={openModal}>
+                  <IconTrash />
+                </ActionIcon>
+              </Group>
+            </>
+          </Group>
+        </td>
+      </tr>
+    );
+  });
   return (
     <DashboardShell>
-      <SimpleGrid cols={3}>
-        {data.map((p) => (
-          <Card shadow="sm" p="lg" radius="md" withBorder>
-            <Card.Section>
-              <Image
-                src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                height={160}
-                alt="Norway"
-              />
-            </Card.Section>
-
-            <Group position="apart" mt="md" mb="xs">
-              <Text weight={500}>{p.title}</Text>
-            </Group>
-
-            <Text size="sm" color="dimmed">
-              {p.description}
-            </Text>
-            <Group position="right">
-              <Link passHref href={`/dashboard/program/edit/${p.id}`}>
-                <ActionIcon size="sm">
-                  <IconEdit />
-                </ActionIcon>
-              </Link>
-            </Group>
-          </Card>
-        ))}
-      </SimpleGrid>
+      <Container>
+        <Title>My Programs</Title>
+        <Table verticalSpacing="lg" highlightOnHover>
+          <thead>
+            <tr>
+              <th>title</th>
+              <th>createdAt</th>
+              <th>updatedAt</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+      </Container>
     </DashboardShell>
   );
 }

@@ -1,4 +1,4 @@
-import DashboardShell from '@/components/Layout/Shells/DashboardShell';
+import DashboardShell from '@/components/Dashboard';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import { trpc } from 'src/utils/trpc';

@@ -22,7 +22,7 @@ import {
   IconTrophy,
   TablerIcon,
 } from '@tabler/icons';
-import Link from 'next/link';
+
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import AddContentModal from '../AddContentModal';
@@ -46,17 +46,17 @@ const userLinks: NavbarLinkProps[] = [
   {
     icon: IconBooks,
     label: 'Programs',
-    href: 'programs',
+    href: '/dashboard/programs',
   },
   {
     icon: IconCalendar,
     label: 'Schedule',
-    href: 'schedule',
+    href: '/dashboard/schedule',
   },
   {
     icon: IconTrophy,
     label: 'PRs',
-    href: 'personal-records',
+    href: '/dashboard/personal-records',
   },
 ];
 
@@ -110,20 +110,23 @@ const useStyles = createStyles((theme) => ({
 
 function NavbarLink({ icon: Icon, label, href }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
-  const isActive = useRouter().pathname === href;
+  const router = useRouter();
+  const isActive = router.pathname === href;
   return (
-    <Link href={href} passHref>
-      <Tooltip label={label} position="right" transitionDuration={0}>
-        <UnstyledButton className={cx(classes.link, isActive ? classes.active : '')} component="a">
-          <Icon stroke={1.5} />
-        </UnstyledButton>
-      </Tooltip>
-    </Link>
+    <Tooltip label={label} position="right" transitionDuration={0}>
+      <UnstyledButton
+        className={cx(classes.link, isActive ? classes.active : '')}
+        onClick={() => router.push(href)}
+      >
+        <Icon stroke={1.5} />
+      </UnstyledButton>
+    </Tooltip>
   );
 }
 
 const links = userLinks.map((link, index) => <NavbarLink {...link} key={link.label} />);
 const navLinks = globalLinks.map((link, index) => <NavbarLink {...link} key={link.label} />);
+
 export default function DashboardShell({ children }: ShellProps) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();

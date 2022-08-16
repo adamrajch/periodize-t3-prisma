@@ -12,6 +12,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconPlus } from '@tabler/icons';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 import ContentFormCheckboxCard from './ContentTypeCheckBox';
@@ -37,9 +38,13 @@ export default function AddContentModal() {
   const [opened, setOpened] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [active, setActive] = useState(0);
-
-  const mutation = trpc.useMutation(['program.create-program']);
-
+  const utils = trpc.useContext();
+  const mutation = trpc.useMutation(['program.create-program'], {
+    onSuccess() {
+      utils.invalidateQueries(['program.getUserPrograms']);
+    },
+  });
+  const router = useRouter();
   const form = useForm({
     initialValues: {
       title: '',
@@ -90,14 +95,19 @@ export default function AddContentModal() {
 
   async function handleFormSubmit(values: FormValues) {
     setLoading(true);
-    setTimeout(() => {
-      console.log(values);
-      mutation.mutate({
+    try {
+      await mutation.mutate({
         title: form.values.title,
         description: form.values.description,
       });
-      setLoading(false);
-    }, 2000);
+      const newProgramId = mutation.data?.id;
+      handleClose();
+      router.push('/dashboard/programs');
+    } catch (err) {
+      console.log(err);
+    }
+
+    setLoading(false);
   }
   return (
     <>
@@ -168,8 +178,6 @@ export default function AddContentModal() {
           onClick={() => setOpened(true)}
           variant="filled"
           sx={(theme) => ({
-            // width: 50,
-            // height: 50,
             backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
               .background,
             color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,

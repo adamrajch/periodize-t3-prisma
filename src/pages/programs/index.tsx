@@ -1,4 +1,4 @@
-import DashboardShell from '@/components/Layout/Shells/DashboardShell';
+import DashboardShell from '@/components/Dashboard';
 import { DnDLiftList } from '@/components/ProgramForm/DnDLiftList';
 import DndListHandle from '@/components/ProgramForm/DnDLiftList/test';
 import { Button, Card, Container, Group, Image, SimpleGrid, Text } from '@mantine/core';
