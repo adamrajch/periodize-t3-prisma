@@ -28,39 +28,47 @@ export default function EditProgramPage() {
   const { title, description, isPublic, tags } = data;
   return (
     <DashboardShell>
-      {data ? <Title mb={20}>{data?.title}</Title> : <div>no program</div>}
-      <Tabs orientation="vertical" defaultValue="gallery">
-        <Tabs.List>
-          <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
-            Details
-          </Tabs.Tab>
-          <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
-            Split
-          </Tabs.Tab>
-          <Tabs.Tab value="settings" icon={<IconSettings size={14} />}>
-            Settings
-          </Tabs.Tab>
-        </Tabs.List>
+      {!data ? (
+        <div>no program</div>
+      ) : (
+        <>
+          <Title align="center" my={8}>
+            {data.title}
+          </Title>
+          <Tabs orientation="vertical" defaultValue="gallery">
+            <Tabs.List>
+              <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
+                Details
+              </Tabs.Tab>
+              <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
+                Split
+              </Tabs.Tab>
+              <Tabs.Tab value="settings" icon={<IconSettings size={14} />}>
+                Settings
+              </Tabs.Tab>
+            </Tabs.List>
 
-        <Tabs.Panel value="gallery" pl="xs">
-          <Container size="sm">
-            <DetailsForm
-              title={title}
-              description={description || ''}
-              isPublic={isPublic}
-              tags={tags}
-            />
-          </Container>
-        </Tabs.Panel>
+            <Tabs.Panel value="gallery" pl="xs">
+              <Container size="sm">
+                <DetailsForm
+                  title={title}
+                  description={description || ''}
+                  isPublic={isPublic}
+                  tags={tags}
+                />
+              </Container>
+            </Tabs.Panel>
 
-        <Tabs.Panel value="messages" pl="xs">
-          <EditProgramForm data={data} yolo={data} />
-        </Tabs.Panel>
+            <Tabs.Panel value="messages" pl="xs">
+              <EditProgramForm data={data} />
+            </Tabs.Panel>
 
-        <Tabs.Panel value="settings" pl="xs">
-          Settings tab content
-        </Tabs.Panel>
-      </Tabs>
+            <Tabs.Panel value="settings" pl="xs">
+              Settings tab content
+            </Tabs.Panel>
+          </Tabs>
+        </>
+      )}
     </DashboardShell>
   );
 }
