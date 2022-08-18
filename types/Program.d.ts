@@ -20,6 +20,5 @@ export interface Block {
   weeks: Week[];
 }
 export interface ProgramSchema {
-  meta: {};
   blocks: Block[];
 }

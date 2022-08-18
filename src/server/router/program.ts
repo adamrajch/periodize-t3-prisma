@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import { createProgramScehma } from 'src/schema/program.schema';
+import { createProgramScehma, editProgramSchema } from 'src/schema/program.schema';
 import { z } from 'zod';
 import { createProtectedRouter } from './protected-router';
 
@@ -92,6 +92,25 @@ export const programRouter = createProtectedRouter()
       const program = await ctx.prisma.program.delete({
         where: {
           id: input.id,
+        },
+      });
+
+      return program;
+    },
+  })
+  .mutation('editProgramSchema', {
+    input: editProgramSchema,
+    async resolve({ ctx, input }) {
+      const program = await ctx.prisma.program.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          schema: {
+            blocks: {
+              ...input.data,
+            },
+          },
         },
       });
 

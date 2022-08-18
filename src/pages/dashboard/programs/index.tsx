@@ -45,11 +45,15 @@ export default function ProgramsHome() {
 
     return (
       <tr key={p.id}>
-        <td>{p.title}</td>
+        <td>
+          <Link href={`/dashboard/program/edit/${p.id}`}>
+            <a>{p.title}</a>
+          </Link>
+        </td>
         <td>{p.createdAt.toLocaleDateString()}</td>
         <td>{p.updatedAt !== p.createdAt ? '-' : p.updatedAt.toISOString()}</td>
         <td>
-          <Group>
+          <Group position="right">
             <Link passHref href={`/dashboard/program/edit/${p.id}`}>
               <ActionIcon size="sm">
                 <IconEdit />

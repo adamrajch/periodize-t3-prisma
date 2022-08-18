@@ -36,7 +36,7 @@ model Program{
 	authorId	String 
 	isPublic	Boolean @default(false)
 	tags		String[]
-	schema		Json? 
+	schema		Json?	 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime 	@updatedAt
 }
