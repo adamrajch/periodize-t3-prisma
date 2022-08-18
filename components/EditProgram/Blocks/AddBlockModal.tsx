@@ -22,7 +22,7 @@ export default function AddBlockModal({ blocks }: any) {
   const [loading, setLoading] = useState(false);
   const utils = trpc.useContext();
   const id = useRouter().query.id as string;
-
+  console.log('modal: ', blocks);
   const mutation = trpc.useMutation(['program.editProgramSchema'], {
     onSuccess() {
       utils.invalidateQueries(['program.getById', { id }]);
@@ -59,14 +59,13 @@ export default function AddBlockModal({ blocks }: any) {
 
   function handleSubmit(values: FormValues) {
     setLoading(true);
-    const arr = [];
+    const arr = blocks;
     arr.push(values);
+    console.log(arr);
     try {
       mutation.mutate({
         id,
-        data: {
-          ...values,
-        },
+        data: arr,
       });
     } catch (err) {
       console.log(err);

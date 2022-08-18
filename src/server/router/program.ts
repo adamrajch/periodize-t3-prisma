@@ -16,6 +16,10 @@ export const programRouter = createProtectedRouter()
             create: [
               {
                 ...input,
+                schema: {
+                  meta: {},
+                  blocks: [],
+                },
               },
             ],
           },
@@ -107,9 +111,7 @@ export const programRouter = createProtectedRouter()
         },
         data: {
           schema: {
-            blocks: {
-              ...input.data,
-            },
+            blocks: input.data,
           },
         },
       });

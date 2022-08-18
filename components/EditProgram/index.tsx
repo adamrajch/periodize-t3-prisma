@@ -11,8 +11,8 @@ export default function EditProgramForm({ data }: FormProps) {
 
   return (
     <div>
-      <AddBlockModal blocks={schema} />
-      <SimpleGrid cols={4} my={12}>
+      <AddBlockModal blocks={schema.blocks} />
+      <SimpleGrid cols={3} my={12}>
         {schema.blocks &&
           schema.blocks.map((block: any) => (
             <Stack
@@ -26,6 +26,13 @@ export default function EditProgramForm({ data }: FormProps) {
               </Text>
               <Text color="cyan" sx={{ textTransform: 'uppercase' }} size="sm">
                 {block.phase} Phase
+              </Text>
+              <Text>
+                {block.weeks.length === 0
+                  ? ''
+                  : block.weeks.length === 1
+                  ? '1 week'
+                  : `${block.weeks.length} Weeks`}
               </Text>
             </Stack>
           ))}

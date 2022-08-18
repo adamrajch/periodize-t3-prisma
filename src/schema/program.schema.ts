@@ -10,8 +10,8 @@ export const createProgramScehma = z.object({
 
 export type CreateProgramInput = z.TypeOf<typeof createProgramScehma>;
 
-const blockSchema = z
-  .object({
+const blockSchema = z.array(
+  z.object({
     name: z.string(),
     summary: z.string().nullish(),
     phase: z.string(),
@@ -32,7 +32,7 @@ const blockSchema = z
       )
       .nullish(),
   })
-  .nullish();
+);
 
 export const editProgramSchema = z.object({
   id: z.string(),
