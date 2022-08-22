@@ -41,6 +41,15 @@ model Program{
 	updatedAt	DateTime 	@updatedAt
 }
 
+model Exercise{
+	id			String @id @default(uuid())
+	name		String
+	category	String
+	weight		Boolean
+	distance	Boolean
+	time		Boolean
+}
+
 // Necessary for Next auth
 model Account {
 	id                String  @id @default(cuid())

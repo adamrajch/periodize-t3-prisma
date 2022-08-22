@@ -152,9 +152,11 @@ export default function DashboardShell({ children }: ShellProps) {
           <Navbar.Section>
             <Stack justify="center" spacing={2}>
               {links}
-              <Box my={4} mx={0}>
-                <AddContentModal />
-              </Box>
+              <Tooltip label="Create" position="right" transitionDuration={0}>
+                <Box my={4} mx={0}>
+                  <AddContentModal />
+                </Box>
+              </Tooltip>
             </Stack>
           </Navbar.Section>
           <Navbar.Section>

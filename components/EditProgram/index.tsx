@@ -1,5 +1,6 @@
 import { Code, SimpleGrid, Stack, Text } from '@mantine/core';
 import { inferQueryOutput } from 'src/utils/trpc';
+import CreateLiftModal from '../CreateLiftModal.tsx';
 import AddBlockModal from './Blocks/AddBlockModal';
 
 // type NonNullable<T> = Exclude<T, null | undefined>;
@@ -12,6 +13,7 @@ export default function EditProgramForm({ data }: FormProps) {
   return (
     <div>
       <AddBlockModal blocks={schema.blocks} />
+      <CreateLiftModal />
       <SimpleGrid cols={3} my={12}>
         {schema.blocks &&
           schema.blocks.map((block: any) => (
