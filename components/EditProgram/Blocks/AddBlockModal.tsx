@@ -22,7 +22,7 @@ export default function AddBlockModal({ blocks }: any) {
   const [loading, setLoading] = useState(false);
   const utils = trpc.useContext();
   const id = useRouter().query.id as string;
-  console.log('modal: ', blocks);
+
   const mutation = trpc.useMutation(['program.editProgramSchema'], {
     onSuccess() {
       utils.invalidateQueries(['program.getById', { id }]);
@@ -38,6 +38,7 @@ export default function AddBlockModal({ blocks }: any) {
         {
           name: 'Week 1',
           summary: '',
+          days: [],
         },
       ],
     },
@@ -74,6 +75,7 @@ export default function AddBlockModal({ blocks }: any) {
     setLoading(false);
     handleClose();
   }
+
   return (
     <>
       <Modal opened={opened} onClose={handleClose} size="lg" centered withCloseButton={false}>
@@ -110,6 +112,7 @@ export default function AddBlockModal({ blocks }: any) {
                   form.insertListItem('weeks', {
                     name: `Week ${form.values.weeks.length + 1}`,
                     summary: '',
+                    days: [],
                     key: randomId(),
                   })
                 }

@@ -35,7 +35,7 @@ export default function EditProgramPage() {
           <Title align="center" my={8}>
             {data.title}
           </Title>
-          <Tabs orientation="vertical" defaultValue="gallery">
+          <Tabs orientation="vertical" defaultValue="gallery" keepMounted={false}>
             <Tabs.List>
               <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
                 Details
@@ -60,7 +60,9 @@ export default function EditProgramPage() {
             </Tabs.Panel>
 
             <Tabs.Panel value="messages" pl="xs">
-              <EditProgramForm data={data} />
+              <Container size="xl">
+                <EditProgramForm data={data} />
+              </Container>
             </Tabs.Panel>
 
             <Tabs.Panel value="settings" pl="xs">
