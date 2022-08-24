@@ -60,9 +60,7 @@ export default function EditProgramPage() {
             </Tabs.Panel>
 
             <Tabs.Panel value="messages" pl="xs">
-              <Container size="xl">
-                <EditProgramForm data={data} />
-              </Container>
+              <EditProgramForm data={data} />
             </Tabs.Panel>
 
             <Tabs.Panel value="settings" pl="xs">

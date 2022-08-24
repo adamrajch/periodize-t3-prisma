@@ -12,12 +12,18 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { randomId } from '@mantine/hooks';
-import { IconTrash } from '@tabler/icons';
+import { IconPlus, IconTrash } from '@tabler/icons';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 
-export default function AddBlockModal({ blocks }: any) {
+interface AddBlockModalProps {
+  blocks: any;
+  trigger?: 'icon' | 'button';
+  highlight?: boolean;
+}
+
+export default function AddBlockModal({ blocks, trigger, highlight }: AddBlockModalProps) {
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
   const utils = trpc.useContext();
@@ -157,8 +163,15 @@ export default function AddBlockModal({ blocks }: any) {
           </Stack>
         </form>
       </Modal>
-
-      <Button onClick={() => setOpened(true)}>Add Block</Button>
+      <Group position="center">
+        {trigger === 'icon' ? (
+          <ActionIcon onClick={() => setOpened(true)}>
+            <IconPlus color={highlight && !blocks.length ? 'gold' : 'white'} />
+          </ActionIcon>
+        ) : (
+          <Button onClick={() => setOpened(true)}>Add Block</Button>
+        )}
+      </Group>
     </>
   );
 }
