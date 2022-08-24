@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Button,
+  Code,
   Collapse,
   Container,
   createStyles,
@@ -29,7 +30,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 
-import { Block, Day, Week } from 'types/Program';
+import { Block, Cluster, Day, Lift, Week } from 'types/Program';
 import AddBlockModal from './Blocks/AddBlockModal';
 
 // type NonNullable<T> = Exclude<T, null | undefined>;
@@ -111,6 +112,7 @@ export default function EditProgramForm({ data }: FormProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [blockTab, setBlockTab] = useState<number>(0);
   const [weekTab, setWeekTab] = useState<number>(0);
+  const [dayTab, setDayTab] = useState<number>(0);
   const [viewWeek, setViewWeek] = useState<boolean>(false);
   // const [select, setSelect] = useState<string>('0');
   const [weekViewWide, setWeekViewWide] = useState<boolean>(false);
@@ -161,6 +163,7 @@ export default function EditProgramForm({ data }: FormProps) {
   type FormValues = typeof form.values;
 
   useEffect(() => {
+    //when switching to a block that doesnt have current Week index
     if (!blocks[blockTab].weeks[weekTab]) {
       setWeekTab(0);
     }
@@ -229,10 +232,10 @@ export default function EditProgramForm({ data }: FormProps) {
 
           <Stack sx={{ flex: 1 }}>
             {blocks.length ? (
-              <Tabs value={`${blockTab}`}>
+              <Tabs value={`${blockTab}`} keepMounted={false}>
                 {blocks.map((block: Block, bi: number) => (
                   <Tabs.Panel value={`${bi}`}>
-                    <Tabs value={`${weekTab}`}>
+                    <Tabs value={`${weekTab}`} keepMounted={false}>
                       {block.weeks.length ? (
                         <>
                           {block.weeks.map((week: Week, wi: number) => (
@@ -241,7 +244,6 @@ export default function EditProgramForm({ data }: FormProps) {
                                 <Stack my={12}>
                                   <Group position="apart">
                                     <Group align="flex-start">
-                                      <Text>{`B${blockTab}W${weekTab}`}</Text>
                                       <TextInput
                                         required
                                         withAsterisk
@@ -294,6 +296,12 @@ export default function EditProgramForm({ data }: FormProps) {
                                             color="red"
                                             icon={<IconTrash size={14} />}
                                             onClick={() => {
+                                              if (block.weeks.length > 1 && weekTab !== 0) {
+                                                setWeekTab(weekTab - 1);
+                                              } else {
+                                                setWeekTab(0);
+                                              }
+
                                               form.removeListItem(`blocks.${bi}.weeks`, wi);
                                             }}
                                           >
@@ -302,7 +310,14 @@ export default function EditProgramForm({ data }: FormProps) {
                                           <Menu.Item
                                             color="red"
                                             icon={<IconTrash size={14} />}
-                                            onClick={() => form.removeListItem('blocks', bi)}
+                                            onClick={() => {
+                                              if (blocks.length > 1 && blockTab !== 0) {
+                                                setBlockTab(blockTab - 1);
+                                              } else {
+                                                setBlockTab(0);
+                                              }
+                                              form.removeListItem('blocks', bi);
+                                            }}
                                           >
                                             Delete Block
                                           </Menu.Item>
@@ -318,30 +333,125 @@ export default function EditProgramForm({ data }: FormProps) {
                                   </Collapse>
 
                                   {week.days.length ? (
-                                    <Tabs defaultValue="0">
-                                      <Group position="center">
-                                        <Text>DAY</Text>
+                                    <Tabs value={`${dayTab}`} keepMounted={false} variant="pills">
+                                      <Group
+                                        position="center"
+                                        sx={(theme) => ({
+                                          backgroundColor: theme.colors.dark[6],
+                                        })}
+                                      >
+                                        <Text size="lg" weight="bold">
+                                          DAY
+                                        </Text>
                                         <Tabs.List position="center">
                                           {week.days.map((day: Day, di: number) => (
-                                            <Tabs.Tab value={`day-${di}`}>{di + 1}</Tabs.Tab>
+                                            <Tabs.Tab
+                                              value={`${di}`}
+                                              onClick={() => setDayTab(di)}
+                                              sx={{ padding: '16px 20px' }}
+                                            >
+                                              {di + 1}
+                                            </Tabs.Tab>
                                           ))}
                                         </Tabs.List>
                                       </Group>
 
                                       {week.days.map((day: Day, di: number) => (
-                                        <Tabs.Panel value={`day-${di}`}>
+                                        <Tabs.Panel value={`${di}`}>
                                           <Stack>
                                             <Group position="apart">
-                                              <TextInput
-                                                withAsterisk
-                                                required
-                                                label="Day Name"
-                                                placeholder={`Day ${di + 1}`}
-                                                {...form.getInputProps(
-                                                  `blocks.${bi}.weeks.${wi}.days.${di}.name`
-                                                )}
-                                              />
-                                              <Group>hi</Group>
+                                              <Group align="flex-start">
+                                                <TextInput
+                                                  withAsterisk
+                                                  required
+                                                  label="Day Name"
+                                                  placeholder={`Day ${di + 1}`}
+                                                  variant="unstyled"
+                                                  size="lg"
+                                                  sx={{ borderBottom: '1px solid white' }}
+                                                  {...form.getInputProps(
+                                                    `blocks.${bi}.weeks.${wi}.days.${di}.name`
+                                                  )}
+                                                />
+                                              </Group>
+                                              <Group>
+                                                <ActionIcon
+                                                  onClick={() => {
+                                                    form.insertListItem(
+                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                      {
+                                                        type: 'lift',
+                                                        name: '',
+                                                        weight: {
+                                                          load: 135,
+                                                        },
+                                                        records: [],
+                                                      }
+                                                    );
+                                                  }}
+                                                >
+                                                  <IconPlus />
+                                                </ActionIcon>
+                                                <ActionIcon
+                                                  onClick={() => {
+                                                    form.insertListItem(
+                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                      {
+                                                        type: 'cluster',
+                                                        name: '',
+                                                        lifts: [],
+                                                        rest: 0,
+                                                        restUnit: 'sec',
+                                                        weight: {
+                                                          load: 135,
+                                                        },
+                                                        records: [],
+                                                      }
+                                                    );
+                                                  }}
+                                                >
+                                                  <IconPlus />
+                                                </ActionIcon>
+                                                <Menu shadow="md" width={200}>
+                                                  <Menu.Target>
+                                                    <ActionIcon>
+                                                      <IconDotsVertical />
+                                                    </ActionIcon>
+                                                  </Menu.Target>
+                                                  <Menu.Dropdown>
+                                                    <Menu.Label>Application</Menu.Label>
+                                                    <Menu.Item icon={<IconSettings size={14} />}>
+                                                      Generate
+                                                    </Menu.Item>
+                                                    <Menu.Item
+                                                      icon={<IconMessageCircle size={14} />}
+                                                    >
+                                                      Templates
+                                                    </Menu.Item>
+                                                    <Menu.Divider />
+                                                    <Menu.Item
+                                                      color="red"
+                                                      icon={<IconTrash size={14} />}
+                                                      onClick={() => {
+                                                        if (
+                                                          block.weeks[wi].days.length > 1 &&
+                                                          dayTab !== 0
+                                                        ) {
+                                                          setDayTab(dayTab - 1);
+                                                        } else {
+                                                          setDayTab(0);
+                                                        }
+                                                        form.removeListItem(
+                                                          `blocks.${bi}.weeks.${wi}.days`,
+                                                          di
+                                                        );
+                                                      }}
+                                                    >
+                                                      Delete Day
+                                                    </Menu.Item>
+                                                  </Menu.Dropdown>
+                                                </Menu>
+                                              </Group>
                                             </Group>
 
                                             <Stack>
@@ -352,6 +462,147 @@ export default function EditProgramForm({ data }: FormProps) {
                                                 placeholder="Search Exercises"
                                                 rightSectionWidth={42}
                                               />
+                                              {day.exercises.length ? (
+                                                <>
+                                                  {day.exercises.map(
+                                                    (ex: Lift | Cluster, ei: number) => (
+                                                      <>
+                                                        {ex.type === 'lift' ? (
+                                                          <Group position="apart">
+                                                            <TextInput
+                                                              icon={
+                                                                <IconSearch
+                                                                  size={18}
+                                                                  stroke={1.5}
+                                                                />
+                                                              }
+                                                              radius="xl"
+                                                              size="md"
+                                                              placeholder="Search Lift"
+                                                              rightSectionWidth={42}
+                                                              {...form.getInputProps(
+                                                                `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
+                                                              )}
+                                                            />
+                                                            <Group>
+                                                              <ActionIcon>
+                                                                <IconPlus />
+                                                              </ActionIcon>
+                                                              <Menu shadow="md" width={200}>
+                                                                <Menu.Target>
+                                                                  <ActionIcon>
+                                                                    <IconDotsVertical />
+                                                                  </ActionIcon>
+                                                                </Menu.Target>
+                                                                <Menu.Dropdown>
+                                                                  <Menu.Label>
+                                                                    Application
+                                                                  </Menu.Label>
+                                                                  <Menu.Item
+                                                                    icon={
+                                                                      <IconSettings size={14} />
+                                                                    }
+                                                                  >
+                                                                    Generate
+                                                                  </Menu.Item>
+                                                                  <Menu.Item
+                                                                    icon={
+                                                                      <IconMessageCircle
+                                                                        size={14}
+                                                                      />
+                                                                    }
+                                                                  >
+                                                                    Templates
+                                                                  </Menu.Item>
+                                                                  <Menu.Divider />
+                                                                  <Menu.Item
+                                                                    color="red"
+                                                                    icon={<IconTrash size={14} />}
+                                                                    onClick={() => {
+                                                                      form.removeListItem(
+                                                                        `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                                        ei
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    Delete Lift
+                                                                  </Menu.Item>
+                                                                </Menu.Dropdown>
+                                                              </Menu>
+                                                            </Group>
+                                                          </Group>
+                                                        ) : (
+                                                          <Group position="apart">
+                                                            <TextInput
+                                                              icon={
+                                                                <IconSearch
+                                                                  size={18}
+                                                                  stroke={1.5}
+                                                                />
+                                                              }
+                                                              radius="xl"
+                                                              size="md"
+                                                              placeholder="Cluster"
+                                                              rightSectionWidth={42}
+                                                              {...form.getInputProps(
+                                                                `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
+                                                              )}
+                                                            />
+                                                            <Group>
+                                                              <ActionIcon>
+                                                                <IconPlus />
+                                                              </ActionIcon>
+                                                              <Menu shadow="md" width={200}>
+                                                                <Menu.Target>
+                                                                  <ActionIcon>
+                                                                    <IconDotsVertical />
+                                                                  </ActionIcon>
+                                                                </Menu.Target>
+                                                                <Menu.Dropdown>
+                                                                  <Menu.Label>
+                                                                    Application
+                                                                  </Menu.Label>
+                                                                  <Menu.Item
+                                                                    icon={
+                                                                      <IconSettings size={14} />
+                                                                    }
+                                                                  >
+                                                                    Generate
+                                                                  </Menu.Item>
+                                                                  <Menu.Item
+                                                                    icon={
+                                                                      <IconMessageCircle
+                                                                        size={14}
+                                                                      />
+                                                                    }
+                                                                  >
+                                                                    Templates
+                                                                  </Menu.Item>
+                                                                  <Menu.Divider />
+                                                                  <Menu.Item
+                                                                    color="red"
+                                                                    icon={<IconTrash size={14} />}
+                                                                    onClick={() => {
+                                                                      form.removeListItem(
+                                                                        `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                                        ei
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    Delete Lift
+                                                                  </Menu.Item>
+                                                                </Menu.Dropdown>
+                                                              </Menu>
+                                                            </Group>
+                                                          </Group>
+                                                        )}
+                                                      </>
+                                                    )
+                                                  )}
+                                                </>
+                                              ) : (
+                                                <div>no exercises</div>
+                                              )}
                                             </Stack>
                                           </Stack>
                                         </Tabs.Panel>
@@ -363,7 +614,7 @@ export default function EditProgramForm({ data }: FormProps) {
                                 </Stack>
                               </Container>
 
-                              {/* <Code>{JSON.stringify(blocks[bi], null, 4)}</Code> */}
+                              <Code>{JSON.stringify(blocks[bi], null, 4)}</Code>
                             </Tabs.Panel>
                           ))}
                         </>
