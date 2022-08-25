@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from 'react';
 import {
-  createStyles,
-  Header,
-  Container,
-  Group,
-  Burger,
-  Paper,
-  Transition,
-  Button,
-  Box,
   ActionIcon,
+  Burger,
+  Container,
+  createStyles,
+  Group,
+  Header,
+  Paper,
   Text,
+  Transition,
 } from '@mantine/core';
 import { useToggle } from '@mantine/hooks';
+import { IconLogout } from '@tabler/icons';
 import { AuthHeaderLinks, HomeHeaderLinks } from 'constants/HomeHeader';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
-import AuthLinks from '../Auth/AuthLinks';
-import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { handleLogout } from 'src/utils/auth';
-import { Logout } from 'tabler-icons-react';
+import AuthLinks from '../Auth/AuthLinks';
+import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 
 const HEADER_HEIGHT = 80;
 
@@ -188,7 +186,7 @@ export default function HomeHeader() {
                   <Group onClick={handleLogout} position="center" spacing="xs">
                     <Text className={cx(classes.link)}>Logout</Text>
                     <ActionIcon>
-                      <Logout />
+                      <IconLogout />
                     </ActionIcon>
                   </Group>
                 </>

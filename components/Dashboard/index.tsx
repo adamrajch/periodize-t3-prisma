@@ -88,6 +88,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   link: {
+    width: 50,
     height: 50,
     borderRadius: theme.radius.md,
     display: 'flex',
@@ -113,14 +114,16 @@ function NavbarLink({ icon: Icon, label, href }: NavbarLinkProps) {
   const router = useRouter();
   const isActive = router.pathname === href;
   return (
-    <Tooltip label={label} position="right" transitionDuration={0}>
-      <UnstyledButton
-        className={cx(classes.link, isActive ? classes.active : '')}
-        onClick={() => router.push(href)}
-      >
-        <Icon stroke={1.5} />
-      </UnstyledButton>
-    </Tooltip>
+    <Center>
+      <Tooltip label={label} position="right" transitionDuration={0}>
+        <UnstyledButton
+          className={cx(classes.link, isActive ? classes.active : '')}
+          onClick={() => router.push(href)}
+        >
+          <Icon stroke={1.5} />
+        </UnstyledButton>
+      </Tooltip>
+    </Center>
   );
 }
 
@@ -143,14 +146,14 @@ export default function DashboardShell({ children }: ShellProps) {
       navbarOffsetBreakpoint="sm"
       fixed
       navbar={
-        <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ base: 80 }}>
+        <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ base: 100 }}>
           <Navbar.Section>
             <Center>
               <Text className={classes.title}>P</Text>
             </Center>
           </Navbar.Section>
           <Navbar.Section>
-            <Stack justify="center" spacing={2}>
+            <Stack justify="center" spacing={6}>
               {links}
               <Tooltip label="Create" position="right" transitionDuration={0}>
                 <Box my={4} mx={0}>
@@ -163,12 +166,14 @@ export default function DashboardShell({ children }: ShellProps) {
             <Divider my="md" />
           </Navbar.Section>
           <Navbar.Section grow>
-            <Stack justify="center" spacing={2}>
+            <Stack justify="center" spacing={6}>
               {navLinks}
             </Stack>
           </Navbar.Section>
           <Navbar.Section>
-            <DashboardAuthSection />
+            <Center>
+              <DashboardAuthSection />
+            </Center>
           </Navbar.Section>
         </Navbar>
       }
