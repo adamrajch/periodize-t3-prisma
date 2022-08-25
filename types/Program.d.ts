@@ -16,7 +16,6 @@ export interface Record {
   percentage?: number;
 }
 export interface Lift {
-  type: 'lift';
   name: string;
   distance?: {
     unit: string;

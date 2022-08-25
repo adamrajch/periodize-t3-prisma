@@ -1,5 +1,7 @@
+/* eslint-disable max-len */
 import {
   ActionIcon,
+  Box,
   Button,
   Code,
   Collapse,
@@ -45,6 +47,18 @@ const useStyles = createStyles((theme, { weekViewWide }: { weekViewWide: boolean
     border: `2px solid ${theme.primaryColor}`,
     borderRadius: theme.radius.md,
     width: weekViewWide ? '48%' : '100%',
+  },
+
+  liftContainer: {
+    padding: '12px',
+    backgroundColor: theme.colors.dark[7],
+    borderRadius: theme.radius.md,
+  },
+
+  clusterContainer: {
+    padding: '12px',
+    backgroundColor: theme.colors.dark[6],
+    borderRadius: theme.radius.sm,
   },
 
   container: {
@@ -377,10 +391,10 @@ export default function EditProgramForm({ data }: FormProps) {
                                               <Group>
                                                 <ActionIcon
                                                   onClick={() => {
+                                                    // add a lift to exercises[]
                                                     form.insertListItem(
                                                       `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
                                                       {
-                                                        type: 'lift',
                                                         name: '',
                                                         weight: {
                                                           load: 135,
@@ -467,134 +481,223 @@ export default function EditProgramForm({ data }: FormProps) {
                                                   {day.exercises.map(
                                                     (ex: Lift | Cluster, ei: number) => (
                                                       <>
-                                                        {ex.type === 'lift' ? (
-                                                          <Group position="apart">
-                                                            <TextInput
-                                                              icon={
-                                                                <IconSearch
-                                                                  size={18}
-                                                                  stroke={1.5}
-                                                                />
-                                                              }
-                                                              radius="xl"
-                                                              size="md"
-                                                              placeholder="Search Lift"
-                                                              rightSectionWidth={42}
-                                                              {...form.getInputProps(
-                                                                `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
-                                                              )}
-                                                            />
-                                                            <Group>
-                                                              <ActionIcon>
-                                                                <IconPlus />
-                                                              </ActionIcon>
-                                                              <Menu shadow="md" width={200}>
-                                                                <Menu.Target>
-                                                                  <ActionIcon>
-                                                                    <IconDotsVertical />
-                                                                  </ActionIcon>
-                                                                </Menu.Target>
-                                                                <Menu.Dropdown>
-                                                                  <Menu.Label>
-                                                                    Application
-                                                                  </Menu.Label>
-                                                                  <Menu.Item
-                                                                    icon={
-                                                                      <IconSettings size={14} />
-                                                                    }
-                                                                  >
-                                                                    Generate
-                                                                  </Menu.Item>
-                                                                  <Menu.Item
-                                                                    icon={
-                                                                      <IconMessageCircle
-                                                                        size={14}
-                                                                      />
-                                                                    }
-                                                                  >
-                                                                    Templates
-                                                                  </Menu.Item>
-                                                                  <Menu.Divider />
-                                                                  <Menu.Item
-                                                                    color="red"
-                                                                    icon={<IconTrash size={14} />}
-                                                                    onClick={() => {
-                                                                      form.removeListItem(
-                                                                        `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
-                                                                        ei
-                                                                      );
-                                                                    }}
-                                                                  >
-                                                                    Delete Lift
-                                                                  </Menu.Item>
-                                                                </Menu.Dropdown>
-                                                              </Menu>
+                                                        {!('type' in ex) ? (
+                                                          <Box className={classes.liftContainer}>
+                                                            <Group position="apart">
+                                                              <TextInput
+                                                                icon={
+                                                                  <IconSearch
+                                                                    size={18}
+                                                                    stroke={1.5}
+                                                                  />
+                                                                }
+                                                                radius="xl"
+                                                                size="md"
+                                                                placeholder="Search Lift"
+                                                                rightSectionWidth={42}
+                                                                {...form.getInputProps(
+                                                                  `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
+                                                                )}
+                                                              />
+
+                                                              <Group>
+                                                                <ActionIcon>
+                                                                  <IconPlus />
+                                                                </ActionIcon>
+                                                                <Menu shadow="md" width={200}>
+                                                                  <Menu.Target>
+                                                                    <ActionIcon>
+                                                                      <IconDotsVertical />
+                                                                    </ActionIcon>
+                                                                  </Menu.Target>
+                                                                  <Menu.Dropdown>
+                                                                    <Menu.Label>
+                                                                      Application
+                                                                    </Menu.Label>
+                                                                    <Menu.Item
+                                                                      icon={
+                                                                        <IconSettings size={14} />
+                                                                      }
+                                                                    >
+                                                                      Generate
+                                                                    </Menu.Item>
+                                                                    <Menu.Item
+                                                                      icon={
+                                                                        <IconMessageCircle
+                                                                          size={14}
+                                                                        />
+                                                                      }
+                                                                    >
+                                                                      Templates
+                                                                    </Menu.Item>
+                                                                    <Menu.Divider />
+                                                                    <Menu.Item
+                                                                      color="red"
+                                                                      icon={<IconTrash size={14} />}
+                                                                      onClick={() => {
+                                                                        form.removeListItem(
+                                                                          `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                                          ei
+                                                                        );
+                                                                      }}
+                                                                    >
+                                                                      Delete Lift
+                                                                    </Menu.Item>
+                                                                  </Menu.Dropdown>
+                                                                </Menu>
+                                                              </Group>
                                                             </Group>
-                                                          </Group>
+                                                          </Box>
                                                         ) : (
-                                                          <Group position="apart">
-                                                            <TextInput
-                                                              icon={
-                                                                <IconSearch
-                                                                  size={18}
-                                                                  stroke={1.5}
-                                                                />
-                                                              }
-                                                              radius="xl"
-                                                              size="md"
-                                                              placeholder="Cluster"
-                                                              rightSectionWidth={42}
-                                                              {...form.getInputProps(
-                                                                `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
-                                                              )}
-                                                            />
-                                                            <Group>
-                                                              <ActionIcon>
-                                                                <IconPlus />
-                                                              </ActionIcon>
-                                                              <Menu shadow="md" width={200}>
-                                                                <Menu.Target>
-                                                                  <ActionIcon>
-                                                                    <IconDotsVertical />
-                                                                  </ActionIcon>
-                                                                </Menu.Target>
-                                                                <Menu.Dropdown>
-                                                                  <Menu.Label>
-                                                                    Application
-                                                                  </Menu.Label>
-                                                                  <Menu.Item
-                                                                    icon={
-                                                                      <IconSettings size={14} />
-                                                                    }
-                                                                  >
-                                                                    Generate
-                                                                  </Menu.Item>
-                                                                  <Menu.Item
-                                                                    icon={
-                                                                      <IconMessageCircle
-                                                                        size={14}
-                                                                      />
-                                                                    }
-                                                                  >
-                                                                    Templates
-                                                                  </Menu.Item>
-                                                                  <Menu.Divider />
-                                                                  <Menu.Item
-                                                                    color="red"
-                                                                    icon={<IconTrash size={14} />}
-                                                                    onClick={() => {
-                                                                      form.removeListItem(
-                                                                        `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
-                                                                        ei
-                                                                      );
-                                                                    }}
-                                                                  >
-                                                                    Delete Lift
-                                                                  </Menu.Item>
-                                                                </Menu.Dropdown>
-                                                              </Menu>
+                                                          <Stack
+                                                            className={classes.clusterContainer}
+                                                          >
+                                                            <Group position="apart">
+                                                              <div />
+                                                              <TextInput
+                                                                radius="md"
+                                                                size="md"
+                                                                placeholder="Cluster"
+                                                                rightSectionWidth={42}
+                                                                {...form.getInputProps(
+                                                                  `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
+                                                                )}
+                                                              />
+                                                              <Group>
+                                                                <ActionIcon
+                                                                  onClick={() =>
+                                                                    form.insertListItem(
+                                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts`,
+                                                                      { name: '' }
+                                                                    )
+                                                                  }
+                                                                >
+                                                                  <IconPlus />
+                                                                </ActionIcon>
+                                                                <Menu shadow="md" width={200}>
+                                                                  <Menu.Target>
+                                                                    <ActionIcon>
+                                                                      <IconDotsVertical />
+                                                                    </ActionIcon>
+                                                                  </Menu.Target>
+                                                                  <Menu.Dropdown>
+                                                                    <Menu.Label>
+                                                                      Application
+                                                                    </Menu.Label>
+                                                                    <Menu.Item
+                                                                      icon={
+                                                                        <IconSettings size={14} />
+                                                                      }
+                                                                    >
+                                                                      Generate
+                                                                    </Menu.Item>
+                                                                    <Menu.Item
+                                                                      icon={
+                                                                        <IconMessageCircle
+                                                                          size={14}
+                                                                        />
+                                                                      }
+                                                                    >
+                                                                      Templates
+                                                                    </Menu.Item>
+                                                                    <Menu.Divider />
+                                                                    <Menu.Item
+                                                                      color="red"
+                                                                      icon={<IconTrash size={14} />}
+                                                                      onClick={() => {
+                                                                        form.removeListItem(
+                                                                          `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                                          ei
+                                                                        );
+                                                                      }}
+                                                                    >
+                                                                      Delete Lift
+                                                                    </Menu.Item>
+                                                                  </Menu.Dropdown>
+                                                                </Menu>
+                                                              </Group>
                                                             </Group>
-                                                          </Group>
+                                                            <Stack>
+                                                              {ex.lifts.length ? (
+                                                                <>
+                                                                  {ex.lifts.map(
+                                                                    (lift, li: number) => (
+                                                                      <Box
+                                                                        className={
+                                                                          classes.liftContainer
+                                                                        }
+                                                                      >
+                                                                        <Group position="apart">
+                                                                          <TextInput
+                                                                            icon={
+                                                                              <IconSearch
+                                                                                size={18}
+                                                                                stroke={1.5}
+                                                                              />
+                                                                            }
+                                                                            radius="xl"
+                                                                            size="md"
+                                                                            placeholder="Search Lift"
+                                                                            rightSectionWidth={42}
+                                                                            {...form.getInputProps(
+                                                                              `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`
+                                                                            )}
+                                                                          />
+
+                                                                          <Group>
+                                                                            <ActionIcon>
+                                                                              <IconPlus />
+                                                                            </ActionIcon>
+                                                                            <Menu
+                                                                              shadow="md"
+                                                                              width={200}
+                                                                            >
+                                                                              <Menu.Target>
+                                                                                <ActionIcon>
+                                                                                  <IconDotsVertical />
+                                                                                </ActionIcon>
+                                                                              </Menu.Target>
+                                                                              <Menu.Dropdown>
+                                                                                <Menu.Item
+                                                                                  icon={
+                                                                                    <IconSettings
+                                                                                      size={14}
+                                                                                    />
+                                                                                  }
+                                                                                >
+                                                                                  Info
+                                                                                </Menu.Item>
+
+                                                                                <Menu.Divider />
+                                                                                <Menu.Item
+                                                                                  color="red"
+                                                                                  icon={
+                                                                                    <IconTrash
+                                                                                      size={14}
+                                                                                    />
+                                                                                  }
+                                                                                  onClick={() => {
+                                                                                    form.removeListItem(
+                                                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts`,
+                                                                                      li
+                                                                                    );
+                                                                                  }}
+                                                                                >
+                                                                                  Delete Lift
+                                                                                </Menu.Item>
+                                                                              </Menu.Dropdown>
+                                                                            </Menu>
+                                                                          </Group>
+                                                                        </Group>
+                                                                      </Box>
+                                                                    )
+                                                                  )}
+                                                                </>
+                                                              ) : (
+                                                                <>no lifts</>
+                                                              )}
+                                                            </Stack>
+                                                          </Stack>
                                                         )}
                                                       </>
                                                     )
