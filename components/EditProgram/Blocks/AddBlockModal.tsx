@@ -118,7 +118,13 @@ export default function AddBlockModal({ blocks, trigger, highlight }: AddBlockMo
                   form.insertListItem('weeks', {
                     name: `Week ${form.values.weeks.length + 1}`,
                     summary: '',
-                    days: [],
+                    days: [
+                      {
+                        name: 'Day 1',
+                        summary: '',
+                        exercises: [],
+                      },
+                    ],
                     key: randomId(),
                   })
                 }
