@@ -1,4 +1,13 @@
-import { createStyles, Group, Stack, Text, TextInput } from '@mantine/core';
+import {
+  createStyles,
+  Group,
+  NativeSelect,
+  NumberInput,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
+import { TimeInput } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 import { IconSearch } from '@tabler/icons';
 
@@ -72,15 +81,72 @@ export default function LiftSection({
       </Group>
       {lift.records.length ? (
         <Stack>
-          <Group>
+          <Group grow sx={{ textAlign: 'center' }}>
             <Text>Sets</Text>
             <Text>Reps</Text>
             <Text>RPE/%</Text>
+            <Text>RPE/%</Text>
+            <Text>Load</Text>
             <Text>Time</Text>
             <Text>Dist.</Text>
           </Group>
           {lift.records.map((rec, ri) => (
-            <Group>{/* <RecordNumberInput increment={} decrement={} path={} /> */}</Group>
+            <Group grow noWrap>
+              <NumberInput
+                placeholder="5"
+                max={100}
+                min={0}
+                {...form.getInputProps(`${path}.records.${ri}.sets`)}
+              />
+              <NumberInput
+                placeholder="5"
+                max={100}
+                min={0}
+                {...form.getInputProps(`${path}.records.${ri}.reps`)}
+              />
+              <NumberInput
+                placeholder="5"
+                max={100}
+                min={0}
+                {...form.getInputProps(`${path}.records.${ri}.rpe`)}
+              />
+              <NumberInput
+                placeholder="5"
+                max={100}
+                min={0}
+                {...form.getInputProps(`${path}.records.${ri}.percent`)}
+              />
+              <NumberInput
+                placeholder="5"
+                max={100}
+                min={0}
+                {...form.getInputProps(`${path}.records.${ri}.time`)}
+              />
+              <TimeInput />
+              <NumberInput
+                placeholder="5"
+                max={100}
+                min={0}
+                {...form.getInputProps(`${path}.records.${ri}.distance`)}
+                rightSectionWidth={62}
+                rightSection={
+                  <NativeSelect
+                    data={[
+                      { value: 'meter', label: 'm' },
+                      { value: 'foot', label: 'foot' },
+                      { value: 'yard', label: 'yard' },
+                    ]}
+                    styles={{
+                      input: {
+                        fontWeight: 500,
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
+                      },
+                    }}
+                  />
+                }
+              />
+            </Group>
           ))}
         </Stack>
       ) : (

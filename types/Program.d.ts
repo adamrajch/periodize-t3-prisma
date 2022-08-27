@@ -14,17 +14,21 @@ export interface Record {
   reps: number;
   rpe?: number;
   percentage?: number;
-}
-export interface Lift {
-  name: string;
   distance?: {
     unit: string;
     length: number;
   };
-  weight: {
+  weight?: {
     unit?: string;
     load?: number;
   };
+  time?: {
+    unit?: string;
+    time?: number;
+  };
+}
+export interface Lift {
+  name: string;
   records: Record[];
 }
 
@@ -36,7 +40,6 @@ export interface Cluster {
   restUnit: string;
   summary?: string;
   sets: number;
-  reps: number;
 }
 
 export interface Day {

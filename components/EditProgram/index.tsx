@@ -18,10 +18,10 @@ import {
 import { useForm } from '@mantine/form';
 import {
   IconDotsVertical,
+  IconDownload,
   IconMessageCircle,
   IconNote,
   IconPlus,
-  IconSearch,
   IconSettings,
   IconTrash,
   IconViewportWide,
@@ -120,7 +120,6 @@ export default function EditProgramForm({ data }: FormProps) {
   const [weekTab, setWeekTab] = useState<number>(0);
   const [dayTab, setDayTab] = useState<number>(0);
   const [viewWeek, setViewWeek] = useState<boolean>(false);
-  // const [select, setSelect] = useState<string>('0');
   const [weekViewWide, setWeekViewWide] = useState<boolean>(false);
 
   const utils = trpc.useContext();
@@ -216,7 +215,13 @@ export default function EditProgramForm({ data }: FormProps) {
                 form.insertListItem(`blocks.${blockTab}.weeks`, {
                   name: `Week ${blocks[blockTab].weeks.length + 1}`,
                   summary: '',
-                  days: [],
+                  days: [
+                    {
+                      name: '',
+                      summary: '',
+                      exercises: [],
+                    },
+                  ],
                 })
               }
               sx={{ alignSelf: 'center' }}
@@ -246,7 +251,7 @@ export default function EditProgramForm({ data }: FormProps) {
                         <>
                           {block.weeks.map((week: Week, wi: number) => (
                             <Tabs.Panel value={`${wi}`}>
-                              <Container size="sm">
+                              <Container size="md">
                                 <Stack my={12} sx={{ padding: 12 }}>
                                   <Group position="apart">
                                     <Group align="flex-start">
@@ -381,9 +386,9 @@ export default function EditProgramForm({ data }: FormProps) {
                                                 />
                                               </Group>
                                               <Group>
-                                                <ActionIcon
+                                                <Button
+                                                  leftIcon={<IconPlus />}
                                                   onClick={() => {
-                                                    // add a lift to exercises[]
                                                     form.insertListItem(
                                                       `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
                                                       {
@@ -396,9 +401,10 @@ export default function EditProgramForm({ data }: FormProps) {
                                                     );
                                                   }}
                                                 >
-                                                  <IconPlus />
-                                                </ActionIcon>
-                                                <ActionIcon
+                                                  Lift
+                                                </Button>
+                                                <Button
+                                                  leftIcon={<IconPlus />}
                                                   onClick={() => {
                                                     form.insertListItem(
                                                       `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
@@ -415,8 +421,8 @@ export default function EditProgramForm({ data }: FormProps) {
                                                     );
                                                   }}
                                                 >
-                                                  <IconPlus />
-                                                </ActionIcon>
+                                                  Cluster
+                                                </Button>
                                                 <Menu shadow="md" width={200}>
                                                   <Menu.Target>
                                                     <ActionIcon>
@@ -424,14 +430,13 @@ export default function EditProgramForm({ data }: FormProps) {
                                                     </ActionIcon>
                                                   </Menu.Target>
                                                   <Menu.Dropdown>
-                                                    <Menu.Label>Application</Menu.Label>
-                                                    <Menu.Item icon={<IconSettings size={14} />}>
-                                                      Generate
-                                                    </Menu.Item>
                                                     <Menu.Item
                                                       icon={<IconMessageCircle size={14} />}
                                                     >
                                                       Templates
+                                                    </Menu.Item>
+                                                    <Menu.Item icon={<IconDownload size={14} />}>
+                                                      Save As Template
                                                     </Menu.Item>
                                                     <Menu.Divider />
                                                     <Menu.Item
@@ -460,13 +465,6 @@ export default function EditProgramForm({ data }: FormProps) {
                                             </Group>
 
                                             <Stack>
-                                              <TextInput
-                                                icon={<IconSearch size={18} stroke={1.5} />}
-                                                radius="xl"
-                                                size="md"
-                                                placeholder="Search Exercises"
-                                                rightSectionWidth={42}
-                                              />
                                               {day.exercises.length ? (
                                                 <>
                                                   {day.exercises.map(
