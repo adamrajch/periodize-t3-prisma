@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
 import {
-  createStyles,
-  Table,
-  ScrollArea,
-  UnstyledButton,
-  Group,
-  Text,
   Center,
-  TextInput,
+  createStyles,
+  Group,
   Pagination,
+  ScrollArea,
+  Stack,
+  Table,
+  Text,
+  TextInput,
+  UnstyledButton,
 } from '@mantine/core';
-import { Selector, ChevronDown, ChevronUp, Search } from 'tabler-icons-react';
+import { IconChevronDown, IconChevronUp, IconSearch, IconSelector } from '@tabler/icons';
+import React, { useState } from 'react';
+import CreateLiftModal from '../CreateLiftModal.tsx';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -74,7 +76,7 @@ interface ThProps {
 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const { classes } = useStyles();
-  const Icon = sorted ? (reversed ? ChevronUp : ChevronDown) : Selector;
+  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
   return (
     <th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
@@ -151,14 +153,18 @@ export default function LiftTable({ data }: TableSortProps) {
   ));
 
   return (
-    <>
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        icon={<Search size={14} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
+    <Stack>
+      <Group align="center">
+        <TextInput
+          placeholder="Search by any field"
+          icon={<IconSearch size={14} />}
+          value={search}
+          onChange={handleSearchChange}
+          sx={{ flex: 1 }}
+        />
+
+        <CreateLiftModal />
+      </Group>
       <ScrollArea sx={{ height: 450 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
         <Table
           horizontalSpacing="md"
@@ -206,6 +212,6 @@ export default function LiftTable({ data }: TableSortProps) {
         </Table>
       </ScrollArea>
       <Pagination total={10} withControls={false} />
-    </>
+    </Stack>
   );
 }

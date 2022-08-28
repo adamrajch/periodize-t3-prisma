@@ -58,6 +58,11 @@ const userLinks: NavbarLinkProps[] = [
     label: 'PRs',
     href: '/dashboard/personal-records',
   },
+  {
+    icon: IconTrophy,
+    label: 'Lift Manager',
+    href: '/dashboard/lift-manager',
+  },
 ];
 
 const globalLinks: NavbarLinkProps[] = [
@@ -84,7 +89,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   content: {
-    minHeight: '80vh',
+    height: '100%',
+    // border: '1px solid red',
   },
 
   link: {
@@ -139,7 +145,7 @@ export default function DashboardShell({ children }: ShellProps) {
     <AppShell
       styles={{
         main: {
-          background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+          background: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0],
           height: '100%',
         },
       }}
@@ -155,7 +161,7 @@ export default function DashboardShell({ children }: ShellProps) {
           <Navbar.Section>
             <Stack justify="center" spacing={6}>
               {links}
-              <Tooltip label="Create" position="right" transitionDuration={0}>
+              <Tooltip label="Create Program" position="right" transitionDuration={0}>
                 <Box my={4} mx={0}>
                   <AddContentModal />
                 </Box>

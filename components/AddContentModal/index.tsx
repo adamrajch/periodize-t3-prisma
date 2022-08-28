@@ -99,6 +99,26 @@ export default function AddContentModal() {
       await mutation.mutate({
         title: form.values.title,
         description: form.values.description,
+        schema: {
+          blocks: [
+            {
+              name: 'block 1',
+              summary: '',
+              weeks: [
+                {
+                  name: 'Week 1',
+                  summary: '',
+                  days: [
+                    {
+                      name: 'Day 1',
+                      exercises: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       });
       const newProgramId = mutation.data?.id;
       handleClose();

@@ -1,11 +1,11 @@
 /* eslint-disable no-new */
-import { createProgramScehma, editProgramSchema } from 'src/schema/program.schema';
+import { createProgramSchema, editProgramSchema } from 'src/schema/program.schema';
 import { z } from 'zod';
 import { createProtectedRouter } from './protected-router';
 
 export const programRouter = createProtectedRouter()
   .mutation('create-program', {
-    input: createProgramScehma,
+    input: createProgramSchema,
     async resolve({ ctx, input }) {
       const program = await ctx.prisma.user.update({
         where: {
@@ -16,10 +16,6 @@ export const programRouter = createProtectedRouter()
             create: [
               {
                 ...input,
-                schema: {
-                  meta: {},
-                  blocks: [],
-                },
               },
             ],
           },

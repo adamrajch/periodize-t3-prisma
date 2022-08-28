@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import {
   ActionIcon,
+  Box,
   Button,
   Code,
   Collapse,
@@ -194,52 +195,80 @@ export default function EditProgramForm({ data }: FormProps) {
   return (
     <div>
       <form onSubmit={form.onSubmit((values) => handleSubmit())}>
-        <Group align="flex-start" noWrap spacing="xl">
-          <Stack>
-            <AddBlockModal blocks={blocks} trigger="icon" highlight />
-            {blocks.map((block: Block, bi: number) => (
-              <UnstyledButton
-                className={classes.tabButton}
-                sx={(theme) => ({
-                  backgroundColor: bi === blockTab ? theme.colors.dark[5] : 'transparent',
-                })}
-                onClick={() => setBlockTab(bi)}
+        <Group align="flex-start" noWrap spacing="xs">
+          <Group align="flex-start" spacing={0}>
+            <Box>
+              <Text
+                weight="bold"
+                sx={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: 3 }}
               >
-                {bi + 1}
-              </UnstyledButton>
-            ))}
-          </Stack>
-          <Stack>
-            <ActionIcon
-              onClick={() =>
-                form.insertListItem(`blocks.${blockTab}.weeks`, {
-                  name: `Week ${blocks[blockTab].weeks.length + 1}`,
-                  summary: '',
-                  days: [
-                    {
-                      name: '',
-                      summary: '',
-                      exercises: [],
-                    },
-                  ],
-                })
-              }
-              sx={{ alignSelf: 'center' }}
+                Blocks
+              </Text>
+            </Box>
+            <Stack
+              sx={(theme) => ({
+                backgroundColor: theme.colors.dark[7],
+              })}
             >
-              <IconPlus />
-            </ActionIcon>
-            {blocks[blockTab].weeks.map((week: Week, wi: number) => (
-              <UnstyledButton
-                className={classes.tabButton}
-                sx={(theme) => ({
-                  backgroundColor: wi === weekTab ? theme.colors.dark[5] : 'transparent',
-                })}
-                onClick={() => setWeekTab(wi)}
+              <AddBlockModal blocks={blocks} trigger="icon" highlight />
+              {blocks.map((_, bi: number) => (
+                <UnstyledButton
+                  className={classes.tabButton}
+                  sx={(theme) => ({
+                    backgroundColor: bi === blockTab ? theme.colors.blue[6] : 'transparent',
+                  })}
+                  onClick={() => setBlockTab(bi)}
+                >
+                  {bi + 1}
+                </UnstyledButton>
+              ))}
+            </Stack>
+          </Group>
+          <Group align="flex-start" spacing={0}>
+            <Box>
+              <Text
+                weight="bold"
+                sx={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: 3 }}
               >
-                {wi + 1}
-              </UnstyledButton>
-            ))}
-          </Stack>
+                Weeks
+              </Text>
+            </Box>
+            <Stack
+              sx={(theme) => ({
+                backgroundColor: theme.colors.dark[7],
+              })}
+            >
+              <ActionIcon
+                onClick={() =>
+                  form.insertListItem(`blocks.${blockTab}.weeks`, {
+                    name: `Week ${blocks[blockTab].weeks.length + 1}`,
+                    summary: '',
+                    days: [
+                      {
+                        name: '',
+                        summary: '',
+                        exercises: [],
+                      },
+                    ],
+                  })
+                }
+                sx={{ alignSelf: 'center' }}
+              >
+                <IconPlus />
+              </ActionIcon>
+              {blocks[blockTab].weeks.map((_, wi: number) => (
+                <UnstyledButton
+                  className={classes.tabButton}
+                  sx={(theme) => ({
+                    backgroundColor: wi === weekTab ? theme.colors.blue[6] : 'transparent',
+                  })}
+                  onClick={() => setWeekTab(wi)}
+                >
+                  {wi + 1}
+                </UnstyledButton>
+              ))}
+            </Stack>
+          </Group>
 
           <Stack sx={{ flex: 1 }}>
             {blocks.length ? (
@@ -369,7 +398,11 @@ export default function EditProgramForm({ data }: FormProps) {
 
                                       {week.days.map((day: Day, di: number) => (
                                         <Tabs.Panel value={`${di}`}>
-                                          <Stack>
+                                          <Stack
+                                            sx={(theme) => ({
+                                              backgroundColor: theme.colors.dark[8],
+                                            })}
+                                          >
                                             <Group position="apart">
                                               <Group align="flex-start">
                                                 <TextInput
@@ -465,7 +498,7 @@ export default function EditProgramForm({ data }: FormProps) {
                                             </Group>
 
                                             <Stack>
-                                              {day.exercises.length ? (
+                                              {day.exercises?.length ? (
                                                 <>
                                                   {day.exercises.map(
                                                     (ex: Lift | Cluster, ei: number) => (
@@ -492,9 +525,8 @@ export default function EditProgramForm({ data }: FormProps) {
                                     <div>no days</div>
                                   )}
                                 </Stack>
+                                <Code>{JSON.stringify(blocks[bi], null, 4)}</Code>
                               </Container>
-
-                              <Code>{JSON.stringify(blocks[bi], null, 4)}</Code>
                             </Tabs.Panel>
                           ))}
                         </>

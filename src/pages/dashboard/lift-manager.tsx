@@ -1,11 +1,13 @@
-import React from 'react';
-import DashboardShell from '@/components/Layout/Shells/DashboardShell';
+import DashboardShell from '@/components/Dashboard';
 import LiftManager from '@/components/LiftManager';
+import { Container } from '@mantine/core';
 
 export default function LiftManagerPage() {
   return (
     <DashboardShell>
-      <LiftManager />
+      <Container>
+        <LiftManager />
+      </Container>
     </DashboardShell>
   );
 }

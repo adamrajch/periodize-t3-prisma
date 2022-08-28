@@ -2,7 +2,7 @@ import DashboardShell from '@/components/Dashboard';
 import EditProgramForm from '@/components/EditProgram';
 import DetailsForm from '@/components/EditProgram/DetailsForm';
 
-import { Container, Tabs, Title } from '@mantine/core';
+import { Box, Container, Tabs, Title } from '@mantine/core';
 import { IconMessageCircle, IconPhoto, IconSettings } from '@tabler/icons';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
@@ -28,47 +28,49 @@ export default function EditProgramPage() {
   const { title, description, isPublic, tags } = data;
   return (
     <DashboardShell>
-      {!data ? (
-        <div>no program</div>
-      ) : (
-        <>
-          <Title align="center" my={8}>
-            {data.title}
-          </Title>
-          <Tabs orientation="vertical" defaultValue="gallery" keepMounted={false}>
-            <Tabs.List>
-              <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
-                Details
-              </Tabs.Tab>
-              <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
-                Split
-              </Tabs.Tab>
-              <Tabs.Tab value="settings" icon={<IconSettings size={14} />}>
-                Settings
-              </Tabs.Tab>
-            </Tabs.List>
+      <Box sx={{ height: '100%' }}>
+        <Title
+          align="center"
+          my={8}
+          sx={(theme) => ({
+            padding: theme.spacing.xl,
+          })}
+        >
+          Edit: {data.title}
+        </Title>
+        <Tabs orientation="vertical" defaultValue="gallery" keepMounted={false}>
+          <Tabs.List>
+            <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
+              Details
+            </Tabs.Tab>
+            <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
+              Split
+            </Tabs.Tab>
+            <Tabs.Tab value="settings" icon={<IconSettings size={14} />}>
+              Settings
+            </Tabs.Tab>
+          </Tabs.List>
 
-            <Tabs.Panel value="gallery" pl="xs">
-              <Container size="sm">
-                <DetailsForm
-                  title={title}
-                  description={description || ''}
-                  isPublic={isPublic}
-                  tags={tags}
-                />
-              </Container>
-            </Tabs.Panel>
+          <Tabs.Panel value="gallery" pl="xs">
+            <Container size="sm">
+              <DetailsForm
+                title={title}
+                description={description || ''}
+                isPublic={isPublic}
+                tags={tags}
+              />
+            </Container>
+          </Tabs.Panel>
 
-            <Tabs.Panel value="messages" pl="xs">
-              <EditProgramForm data={data} />
-            </Tabs.Panel>
+          <Tabs.Panel value="messages" pl="xs">
+            <EditProgramForm data={data} />
+          </Tabs.Panel>
 
-            <Tabs.Panel value="settings" pl="xs">
-              Settings tab content
-            </Tabs.Panel>
-          </Tabs>
-        </>
-      )}
+          <Tabs.Panel value="settings" pl="xs">
+            Settings tab content
+          </Tabs.Panel>
+        </Tabs>
+      </Box>
     </DashboardShell>
   );
 }

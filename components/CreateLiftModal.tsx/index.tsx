@@ -119,7 +119,7 @@ export default function CreateLiftModal() {
         </form>
       </Modal>
 
-      <Button onClick={() => setOpened(true)}>Add Lift</Button>
+      <Button onClick={() => setOpened(true)}>Create Exercise</Button>
     </>
   );
 }

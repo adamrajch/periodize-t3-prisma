@@ -1,10 +1,10 @@
 /* eslint-disable no-new */
-import { createLiftScehma } from 'src/schema/lift.schema';
-import { createRouter } from './context';
 import * as trpc from '@trpc/server';
+import { createExerciseScehma } from 'src/schema/lift.schema';
+import { createRouter } from './context';
 
-export const liftRouter = createRouter().mutation('create-lift', {
-  input: createLiftScehma,
+export const liftRouter = createRouter().mutation('create-exercise', {
+  input: createExerciseScehma,
   async resolve({ ctx, input }) {
     if (!ctx.session?.user) {
       new trpc.TRPCError({
@@ -13,24 +13,12 @@ export const liftRouter = createRouter().mutation('create-lift', {
       });
     }
 
-    const post = await ctx.prisma.lift.create({
+    const exercise = await ctx.prisma.exercise.create({
       data: {
         ...input,
-        default: false,
-        user: {
-          create: [
-            {
-              user: {
-                connect: {
-                  id: ctx.session?.user.id,
-                },
-              },
-            },
-          ],
-        },
       },
     });
 
-    return post;
+    return exercise;
   },
 });

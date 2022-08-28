@@ -44,10 +44,10 @@ model Program{
 model Exercise{
 	id			String @id @default(uuid())
 	name		String
-	category	String
-	weight		Boolean
-	distance	Boolean
-	time		Boolean
+	category	String?
+	load		Boolean 
+	distance	Boolean 
+	time		Boolean 
 }
 
 // Necessary for Next auth
