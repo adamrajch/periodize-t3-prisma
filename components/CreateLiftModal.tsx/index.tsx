@@ -3,7 +3,7 @@ import {
   Checkbox,
   Group,
   Modal,
-  NativeSelect,
+  MultiSelect,
   Stack,
   TextInput,
   Title,
@@ -17,20 +17,21 @@ import { trpc } from 'src/utils/trpc';
 export default function CreateLiftModal() {
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState<string[]>([]);
   const utils = trpc.useContext();
   const id = useRouter().query.id as string;
 
-  const mutation = trpc.useMutation(['program.editProgramSchema'], {
+  const mutation = trpc.useMutation(['exercise.create-exercise'], {
     onSuccess() {
-      utils.invalidateQueries(['program.getById', { id }]);
+      utils.invalidateQueries(['exercise.getExercises']);
     },
   });
 
   const form = useForm({
     initialValues: {
       name: '',
-      category: 'bodybuilding',
-      weight: true,
+      category: [],
+      load: true,
       distance: false,
       time: false,
     },
@@ -42,6 +43,7 @@ export default function CreateLiftModal() {
   });
 
   function handleClose() {
+    setCategory([]);
     setOpened(false);
     form.reset();
   }
@@ -52,7 +54,11 @@ export default function CreateLiftModal() {
     setLoading(true);
 
     try {
-      console.log('herro');
+      mutation.mutate({
+        ...form.values,
+        category,
+      });
+      console.log(mutation.data?.id);
     } catch (err) {
       console.log(err);
     }
@@ -61,15 +67,7 @@ export default function CreateLiftModal() {
     handleClose();
   }
 
-  const selectOptions = [
-    'bodybuilding',
-    'powerlifting',
-    'weightlifting',
-    'armwrestling',
-    'strongman',
-  ];
-
-  const checkOptions = ['weight', 'distance', 'time'];
+  const checkOptions = ['load', 'distance', 'time'];
 
   return (
     <>
@@ -88,25 +86,35 @@ export default function CreateLiftModal() {
               placeholder=""
               {...form.getInputProps('name')}
             />
-
-            <NativeSelect
-              required
-              label="Category"
-              placeholder="Pick one"
+            <MultiSelect
               data={[
-                { value: 'bodybuilding', label: 'bodybuilding' },
-                { value: 'powerlifting', label: 'powerlifting' },
-                { value: 'weightlifting', label: 'weightlifting' },
-                { value: 'armwrestling', label: 'armwrestling' },
-                { value: 'strongman', label: 'strongman' },
-                { value: 'general', label: 'general' },
+                { value: 'abs', label: 'abs' },
+                { value: 'back', label: 'back' },
+                { value: 'biceps', label: 'biceps' },
+                { value: 'chest', label: 'chest' },
+                { value: 'forearm/hand', label: 'forearm/hand' },
+                { value: 'legs', label: 'legs' },
+                { value: 'triceps', label: 'triceps' },
+                { value: 'shoulders', label: 'shoulders' },
               ]}
-              value={form.values.category}
-              onChange={(e) => form.setFieldValue('category', e.currentTarget.value)}
+              label="Select Anatomy"
+              placeholder="Select Body Part"
+              searchable
+              clearable
+              transitionDuration={150}
+              transition="pop-top-left"
+              transitionTimingFunction="ease"
+              value={category}
+              onChange={setCategory}
             />
+
             <Group>
               {checkOptions.map((check) => (
-                <Checkbox label={check} {...form.getInputProps(check, { type: 'checkbox' })} />
+                <Checkbox
+                  key={check}
+                  label={check}
+                  {...form.getInputProps(check, { type: 'checkbox' })}
+                />
               ))}
             </Group>
 

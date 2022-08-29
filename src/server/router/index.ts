@@ -1,14 +1,14 @@
 // src/server/router/index.ts
-import { createRouter } from './context';
 import superjson from 'superjson';
 import { authRouter } from './auth';
-import { liftRouter } from './lift';
+import { createRouter } from './context';
+import { exerciseRouter } from './exercise';
 import { programRouter } from './program';
 
 export const appRouter = createRouter()
   .transformer(superjson)
-  .merge('lift.', liftRouter)
   .merge('auth.', authRouter)
-  .merge('program.', programRouter);
+  .merge('program.', programRouter)
+  .merge('exercise.', exerciseRouter);
 // export type definition of API
 export type AppRouter = typeof appRouter;

@@ -5,7 +5,7 @@ export const createExerciseScehma = z.object({
     .string()
     .min(2, 'Minimum name length is 2 characterse')
     .max(20, 'Minimum name length is 20 characterse'),
-  category: z.string().nullish(),
+  category: z.array(z.string()),
   load: z.boolean(),
   distance: z.boolean(),
   time: z.boolean(),

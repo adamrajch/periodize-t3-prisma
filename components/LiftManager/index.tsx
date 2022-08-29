@@ -1,89 +1,64 @@
-import React from 'react';
-import LiftTable from './LiftTable';
+import { ActionIcon, Group, SegmentedControl, Table } from '@mantine/core';
+import { Exercise } from '@prisma/client';
+import { IconCheck, IconTrash, IconX } from '@tabler/icons';
+import { useState } from 'react';
+import { trpc } from 'src/utils/trpc';
+import CreateLiftModal from '../CreateLiftModal.tsx';
 
-const data = [
-  {
-    name: 'Athena Weissnat',
-    company: 'Little - Rippin',
-    email: 'Elouise.Prohaska@yahoo.com',
-  },
-  {
-    name: 'Deangelo Runolfsson',
-    company: 'Greenfelder - Krajcik',
-    email: 'Kadin_Trantow87@yahoo.com',
-  },
-  {
-    name: 'Danny Carter',
-    company: 'Kohler and Sons',
-    email: 'Marina3@hotmail.com',
-  },
-  {
-    name: 'Trace Tremblay PhD',
-    company: 'Crona, Aufderhar and Senger',
-    email: 'Antonina.Pouros@yahoo.com',
-  },
-  {
-    name: 'Derek Dibbert',
-    company: 'Gottlieb LLC',
-    email: 'Abagail29@hotmail.com',
-  },
-  {
-    name: 'Viola Bernhard',
-    company: 'Funk, Rohan and Kreiger',
-    email: 'Jamie23@hotmail.com',
-  },
-  {
-    name: 'Austin Jacobi',
-    company: 'Botsford - Corwin',
-    email: 'Genesis42@yahoo.com',
-  },
-  {
-    name: 'Hershel Mosciski',
-    company: 'Okuneva, Farrell and Kilback',
-    email: 'Idella.Stehr28@yahoo.com',
-  },
-  {
-    name: 'Mylene Ebert',
-    company: 'Kirlin and Sons',
-    email: 'Hildegard17@hotmail.com',
-  },
-  {
-    name: 'Lou Trantow',
-    company: 'Parisian - Lemke',
-    email: 'Hillard.Barrows1@hotmail.com',
-  },
-  {
-    name: 'Dariana Weimann',
-    company: 'Schowalter - Donnelly',
-    email: 'Colleen80@gmail.com',
-  },
-  {
-    name: 'Dr. Christy Herman',
-    company: 'VonRueden - Labadie',
-    email: 'Lilyan98@gmail.com',
-  },
-  {
-    name: 'Katelin Schuster',
-    company: 'Jacobson - Smitham',
-    email: 'Erich_Brekke76@gmail.com',
-  },
-  {
-    name: 'Melyna Macejkovic',
-    company: 'Schuster LLC',
-    email: 'Kylee4@yahoo.com',
-  },
-  {
-    name: 'Pinkie Rice',
-    company: 'Wolf, Trantow and Zulauf',
-    email: 'Fiona.Kutch@hotmail.com',
-  },
-  {
-    name: 'Brain Kreiger',
-    company: 'Lueilwitz Group',
-    email: 'Rico98@hotmail.com',
-  },
-];
-
-export default function LiftManager() {
-  return <LiftTable data={data} />;
+export default function LiftManager({ data }: { data: any }) {
+  const [value, setValue] = useState('all');
+  const utils = trpc.useContext();
+  const mutation = trpc.useMutation(['exercise.delete-exercise'], {
+    onSuccess() {
+      utils.invalidateQueries(['exercise.getExercises']);
+    },
+  });
+  async function handleDelete({ id: string }) {}
+  const rows = data.map((p: Exercise) => (
+    <tr key={p.id}>
+      <td>
+        <a>{p.name}</a>
+      </td>
+      <td>{p.load ? <IconCheck /> : <IconX />}</td>
+      <td>{p.distance ? <IconCheck /> : <IconX />}</td>
+      <td>{p.time ? <IconCheck /> : <IconX />}</td>
+      <td>{p.createdAt.toLocaleDateString()}</td>
+      <td>
+        <ActionIcon>
+          <IconTrash />
+        </ActionIcon>
+      </td>
+    </tr>
+  ));
+  return (
+    <>
+      <Group>
+        <SegmentedControl
+          value={value}
+          onChange={setValue}
+          data={[
+            { label: 'all', value: 'all' },
+            { label: 'category', value: 'category' },
+            { label: 'user created', value: 'user' },
+          ]}
+          sx={{ flex: 1 }}
+        />
+        <CreateLiftModal />
+      </Group>
+      <Table verticalSpacing="lg" highlightOnHover>
+        <thead>
+          <tr>
+            <th>title</th>
+            <th>load</th>
+            <th>distance</th>
+            <th>time</th>
+            <th>createdAt</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
+      {value === 'user' ? <>user lifts</> : null}
+    </>
+  );
 }
