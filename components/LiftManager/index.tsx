@@ -13,7 +13,17 @@ export default function LiftManager({ data }: { data: any }) {
       utils.invalidateQueries(['exercise.getExercises']);
     },
   });
-  async function handleDelete({ id: string }) {}
+
+  async function handleDelete(id: string) {
+    try {
+      mutation.mutate({
+        id,
+      });
+    } catch (err) {
+      alert(err);
+    }
+  }
+
   const rows = data.map((p: Exercise) => (
     <tr key={p.id}>
       <td>
@@ -24,7 +34,7 @@ export default function LiftManager({ data }: { data: any }) {
       <td>{p.time ? <IconCheck /> : <IconX />}</td>
       <td>{p.createdAt.toLocaleDateString()}</td>
       <td>
-        <ActionIcon>
+        <ActionIcon onClick={() => handleDelete(p.id)}>
           <IconTrash />
         </ActionIcon>
       </td>

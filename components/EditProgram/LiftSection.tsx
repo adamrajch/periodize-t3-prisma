@@ -1,18 +1,9 @@
-import {
-  createStyles,
-  Group,
-  NativeSelect,
-  NumberInput,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
-import { TimeInput } from '@mantine/dates';
+import { createStyles, Group, NativeSelect, NumberInput, Stack, Text } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
-import { IconSearch } from '@tabler/icons';
 
 import { Lift, ProgramSchema } from 'types/Program';
 import LiftMenu from './Exercise/LiftMenu';
+import ExerciseSelect from './ExerciseSelect';
 
 interface ExerciseSectionProps {
   form: UseFormReturnType<ProgramSchema>;
@@ -52,16 +43,22 @@ export default function LiftSection({
   function insertRecord() {
     li === undefined
       ? form.insertListItem(`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.records`, {
-          sets: 0,
-          reps: 0,
+          sets: 5,
+          reps: 5,
           rpe: 5,
+          percentage: null,
+          distance: lift.distance ? 5 : null,
+          weight: lift.load ? { unit: 'lbs', load: 135 } : null,
         })
       : form.insertListItem(
           `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts.${li}.records`,
           {
-            sets: 0,
-            reps: 0,
+            sets: 5,
+            reps: 5,
             rpe: 5,
+            percentage: null,
+            distance: lift.distance ? 5 : null,
+            weight: lift.load ? { unit: 'lbs', load: 135 } : null,
           }
         );
   }
@@ -69,26 +66,19 @@ export default function LiftSection({
   return (
     <Stack className={classes.liftContainer}>
       <Group position="apart">
-        <TextInput
-          icon={<IconSearch size={18} stroke={1.5} />}
-          radius="xl"
-          size="md"
-          placeholder="Search Lift"
-          rightSectionWidth={42}
-          {...form.getInputProps(`${path}.name`)}
-        />
-        <LiftMenu deleteLift={deleteLift} insertRecord={insertRecord} />
+        <ExerciseSelect form={form} bi={bi} wi={wi} di={di} ei={ei} li={li} />
+        <LiftMenu deleteLift={deleteLift} insertRecord={insertRecord} lift={lift} li={li} />
       </Group>
-      {lift.records.length ? (
+      {lift.records?.length ? (
         <Stack>
           <Group grow sx={{ textAlign: 'center' }}>
             <Text>Sets</Text>
             <Text>Reps</Text>
-            <Text>RPE/%</Text>
-            <Text>RPE/%</Text>
-            <Text>Load</Text>
-            <Text>Time</Text>
-            <Text>Dist.</Text>
+            <Text>RPE</Text>
+            <Text>%1RM</Text>
+            {lift.load ? <Text>Load</Text> : null}
+            {lift.time ? <Text>time</Text> : null}
+            {lift.distance ? <Text>distance</Text> : null}
           </Group>
           {lift.records.map((rec, ri) => (
             <Group grow noWrap>
@@ -116,41 +106,74 @@ export default function LiftSection({
                 min={0}
                 {...form.getInputProps(`${path}.records.${ri}.percent`)}
               />
-              <NumberInput
-                placeholder="5"
-                max={100}
-                min={0}
-                {...form.getInputProps(`${path}.records.${ri}.time`)}
-              />
-              <TimeInput />
-              <NumberInput
-                placeholder="5"
-                max={100}
-                min={0}
-                {...form.getInputProps(`${path}.records.${ri}.distance`)}
-                rightSectionWidth={62}
-                rightSection={
-                  <NativeSelect
-                    data={[
-                      { value: 'meter', label: 'm' },
-                      { value: 'foot', label: 'foot' },
-                      { value: 'yard', label: 'yard' },
-                    ]}
-                    styles={{
-                      input: {
-                        fontWeight: 500,
-                        borderTopLeftRadius: 0,
-                        borderBottomLeftRadius: 0,
-                      },
-                    }}
-                  />
-                }
-              />
+              {lift.load ? (
+                <NumberInput
+                  placeholder="5"
+                  max={100}
+                  min={0}
+                  {...form.getInputProps(`${path}.records.${ri}.weight.load`)}
+                  rightSectionWidth={62}
+                  rightSection={
+                    <NativeSelect
+                      data={[
+                        { value: 'lbs', label: 'lbs' },
+                        { value: 'kgs', label: 'kgs' },
+                      ]}
+                      onChange={(event) =>
+                        form.setFieldValue(
+                          `${path}.records.${ri}.weight.unit`,
+                          event.currentTarget.value
+                        )
+                      }
+                      styles={{
+                        input: {
+                          fontWeight: 500,
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
+                        },
+                      }}
+                    />
+                  }
+                />
+              ) : null}
+              {lift.time ? (
+                <NumberInput
+                  placeholder="5"
+                  max={100}
+                  min={0}
+                  {...form.getInputProps(`${path}.records.${ri}.time`)}
+                />
+              ) : null}
+              {lift.distance ? (
+                <NumberInput
+                  placeholder="5"
+                  max={100}
+                  min={0}
+                  {...form.getInputProps(`${path}.records.${ri}.distance`)}
+                  rightSectionWidth={62}
+                  rightSection={
+                    <NativeSelect
+                      data={[
+                        { value: 'meter', label: 'm' },
+                        { value: 'foot', label: 'foot' },
+                        { value: 'yard', label: 'yard' },
+                      ]}
+                      styles={{
+                        input: {
+                          fontWeight: 500,
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
+                        },
+                      }}
+                    />
+                  }
+                />
+              ) : null}
             </Group>
           ))}
         </Stack>
       ) : (
-        <>no records</>
+        <> </>
       )}
     </Stack>
   );

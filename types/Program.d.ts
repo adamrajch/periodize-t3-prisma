@@ -22,13 +22,14 @@ export interface Record {
     unit?: string;
     load?: number;
   };
-  time?: {
-    unit?: string;
-    time?: number;
-  };
+  time?: number;
 }
 export interface Lift {
+  id?: string;
   name: string;
+  load?: boolean;
+  time?: boolean;
+  distance?: boolean;
   records: Record[];
 }
 

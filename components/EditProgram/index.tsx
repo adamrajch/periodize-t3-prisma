@@ -32,6 +32,7 @@ import { useEffect, useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 
 import { Block, Cluster, Day, Lift, Week } from 'types/Program';
+import AddExerciseToDaySearch from './AddExerciseToDay';
 import AddBlockModal from './Blocks/AddBlockModal';
 import ExerciseSection from './Exercise';
 
@@ -419,6 +420,12 @@ export default function EditProgramForm({ data }: FormProps) {
                                                 />
                                               </Group>
                                               <Group>
+                                                <AddExerciseToDaySearch
+                                                  form={form}
+                                                  bi={bi}
+                                                  wi={wi}
+                                                  di={di}
+                                                />
                                                 <Button
                                                   leftIcon={<IconPlus />}
                                                   onClick={() => {
@@ -426,9 +433,6 @@ export default function EditProgramForm({ data }: FormProps) {
                                                       `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
                                                       {
                                                         name: '',
-                                                        weight: {
-                                                          load: 135,
-                                                        },
                                                         records: [],
                                                       }
                                                     );
@@ -466,10 +470,10 @@ export default function EditProgramForm({ data }: FormProps) {
                                                     <Menu.Item
                                                       icon={<IconMessageCircle size={14} />}
                                                     >
-                                                      Templates
+                                                      templates
                                                     </Menu.Item>
                                                     <Menu.Item icon={<IconDownload size={14} />}>
-                                                      Save As Template
+                                                      save as template
                                                     </Menu.Item>
                                                     <Menu.Divider />
                                                     <Menu.Item

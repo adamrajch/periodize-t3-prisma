@@ -3,7 +3,7 @@ import EditProgramForm from '@/components/EditProgram';
 import DetailsForm from '@/components/EditProgram/DetailsForm';
 
 import { Box, Container, Tabs, Title } from '@mantine/core';
-import { IconMessageCircle, IconPhoto, IconSettings } from '@tabler/icons';
+import { IconMessageCircle, IconPhoto } from '@tabler/icons';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
 import { trpc } from 'src/utils/trpc';
@@ -46,9 +46,6 @@ export default function EditProgramPage() {
             <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
               Split
             </Tabs.Tab>
-            <Tabs.Tab value="settings" icon={<IconSettings size={14} />}>
-              Settings
-            </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="gallery" pl="xs">
@@ -64,10 +61,6 @@ export default function EditProgramPage() {
 
           <Tabs.Panel value="messages" pl="xs">
             <EditProgramForm data={data} />
-          </Tabs.Panel>
-
-          <Tabs.Panel value="settings" pl="xs">
-            Settings tab content
           </Tabs.Panel>
         </Tabs>
       </Box>
