@@ -26,6 +26,7 @@ export interface Record {
 }
 export interface Lift {
   id?: string;
+  selectedName: string;
   name: string;
   load?: boolean;
   time?: boolean;

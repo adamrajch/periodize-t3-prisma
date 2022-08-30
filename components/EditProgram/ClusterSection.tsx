@@ -41,14 +41,16 @@ export default function ClusterSection({ form, ex, ei, bi, wi, di }: ExerciseSec
   return (
     <Stack className={classes.clusterContainer}>
       <Group position="apart">
-        <div />
         <TextInput
           radius="md"
           size="md"
           placeholder="Cluster"
           rightSectionWidth={42}
+          required
+          withAsterisk
           {...form.getInputProps(`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`)}
         />
+
         <ClusterMenu addLift={addLift} deleteCluster={deleteCluster} />
       </Group>
       <Stack>
@@ -67,9 +69,7 @@ export default function ClusterSection({ form, ex, ei, bi, wi, di }: ExerciseSec
               />
             ))}
           </>
-        ) : (
-          <>no lifts</>
-        )}
+        ) : null}
       </Stack>
     </Stack>
   );

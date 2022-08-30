@@ -14,8 +14,9 @@ interface ExerciseSelectProps {
   li?: number;
 }
 
-export default function ExerciseSelect({ form, bi, wi, di, ei, li }: ExerciseSelectProps) {
+export default function ClusterExerciseSelect({ form, bi, wi, di, ei, li }: ExerciseSelectProps) {
   const [search, setSearch] = useState<string>('');
+
   const { data, status, error } = trpc.useQuery(['exercise.searchExercises', { name: search }], {
     enabled: search.length > 2,
   });
@@ -26,8 +27,8 @@ export default function ExerciseSelect({ form, bi, wi, di, ei, li }: ExerciseSel
         label: r.name,
       }))
     : [];
-  const namePath = `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`;
-  const inputPath = `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}`;
+  const namePath = `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts.${li}.name`;
+  const inputPath = `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts.${li}`;
 
   return (
     <>
@@ -45,7 +46,6 @@ export default function ExerciseSelect({ form, bi, wi, di, ei, li }: ExerciseSel
           if (selected?.id) {
             form.setFieldValue(inputPath, {
               id: selected?.id,
-              selectedName: selected?.name,
               name: selected?.name,
               load: selected?.load,
               distance: selected?.distance,

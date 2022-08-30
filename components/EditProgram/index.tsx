@@ -25,14 +25,12 @@ import {
   IconPlus,
   IconSettings,
   IconTrash,
-  IconViewportWide,
 } from '@tabler/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 
 import { Block, Cluster, Day, Lift, Week } from 'types/Program';
-import AddExerciseToDaySearch from './AddExerciseToDay';
 import AddBlockModal from './Blocks/AddBlockModal';
 import ExerciseSection from './Exercise';
 
@@ -176,16 +174,18 @@ export default function EditProgramForm({ data }: FormProps) {
     }
   }, [blockTab]);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     setLoading(true);
-
+    console.log('submitting');
     try {
-      mutation.mutate({
+      await mutation.mutate({
         id,
         data: form.values.blocks,
       });
+      console.log(mutation.data?.schema);
+      console.log(mutation.data?.updatedAt);
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
 
     setLoading(false);
@@ -195,7 +195,12 @@ export default function EditProgramForm({ data }: FormProps) {
   const { classes } = useStyles({ weekViewWide });
   return (
     <div>
-      <form onSubmit={form.onSubmit((values) => handleSubmit())}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
         <Group align="flex-start" noWrap spacing="xs">
           <Group align="flex-start" spacing={0}>
             <Box>
@@ -214,6 +219,7 @@ export default function EditProgramForm({ data }: FormProps) {
               <AddBlockModal blocks={blocks} trigger="icon" highlight />
               {blocks.map((_, bi: number) => (
                 <UnstyledButton
+                  key={bi}
                   className={classes.tabButton}
                   sx={(theme) => ({
                     backgroundColor: bi === blockTab ? theme.colors.blue[6] : 'transparent',
@@ -298,9 +304,6 @@ export default function EditProgramForm({ data }: FormProps) {
                                     </Group>
 
                                     <Group>
-                                      <ActionIcon onClick={() => setWeekViewWide(!weekViewWide)}>
-                                        <IconViewportWide />
-                                      </ActionIcon>
                                       <ActionIcon onClick={() => setViewWeek(!viewWeek)}>
                                         <IconNote />
                                       </ActionIcon>
@@ -420,12 +423,12 @@ export default function EditProgramForm({ data }: FormProps) {
                                                 />
                                               </Group>
                                               <Group>
-                                                <AddExerciseToDaySearch
+                                                {/* <AddExerciseToDaySearch
                                                   form={form}
                                                   bi={bi}
                                                   wi={wi}
                                                   di={di}
-                                                />
+                                                /> */}
                                                 <Button
                                                   leftIcon={<IconPlus />}
                                                   onClick={() => {
@@ -506,14 +509,16 @@ export default function EditProgramForm({ data }: FormProps) {
                                                 <>
                                                   {day.exercises.map(
                                                     (ex: Lift | Cluster, ei: number) => (
-                                                      <ExerciseSection
-                                                        form={form}
-                                                        ex={ex}
-                                                        ei={ei}
-                                                        bi={bi}
-                                                        wi={wi}
-                                                        di={di}
-                                                      />
+                                                      <div>
+                                                        <ExerciseSection
+                                                          form={form}
+                                                          ex={ex}
+                                                          ei={ei}
+                                                          bi={bi}
+                                                          wi={wi}
+                                                          di={di}
+                                                        />
+                                                      </div>
                                                     )
                                                   )}
                                                 </>
