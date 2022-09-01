@@ -1,10 +1,10 @@
 /* eslint-disable no-new */
 import * as trpc from '@trpc/server';
+import { createExerciseScehma } from 'src/schema/exercise.schema';
 import { InputIdSchema, InputStringSchema } from 'src/schema/general.schema';
-import { createExerciseScehma } from 'src/schema/lift.schema';
-import { createRouter } from './context';
+import { createProtectedRouter } from './protected-router';
 
-export const exerciseRouter = createRouter()
+export const exerciseRouter = createProtectedRouter()
   .mutation('create-exercise', {
     input: createExerciseScehma,
     async resolve({ ctx, input }) {
@@ -35,7 +35,7 @@ export const exerciseRouter = createRouter()
     },
   })
   .query('getExercises', {
-    async resolve({ ctx, input }) {
+    async resolve({ ctx }) {
       const exercises = await ctx.prisma.exercise.findMany({
         orderBy: [
           {

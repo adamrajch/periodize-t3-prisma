@@ -1,7 +1,6 @@
 import DashboardShell from '@/components/Dashboard';
 import EditProgramForm from '@/components/EditProgram';
 import DetailsForm from '@/components/EditProgram/DetailsForm';
-
 import { Box, Container, Tabs, Title } from '@mantine/core';
 import { IconMessageCircle, IconPhoto } from '@tabler/icons';
 import NextError from 'next/error';
@@ -24,7 +23,6 @@ export default function EditProgramPage() {
     return null;
   }
 
-  console.log(data);
   const { title, description, isPublic, tags } = data;
   return (
     <DashboardShell>
@@ -67,3 +65,39 @@ export default function EditProgramPage() {
     </DashboardShell>
   );
 }
+
+// export async function getStaticProps(context: GetStaticPropsContext<{ id: string }>) {
+//   const ssg = await createSSGHelpers({
+//     router: appRouter,
+//     ctx: await createContext(),
+//     transformer: superjson, // optional - adds superjson serialization
+//   });
+//   const id = context.params?.id as string;
+//   // prefetch `post.byId`
+//   await ssg.fetchQuery('program.getById', {
+//     id,
+//   });
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//       id,
+//     },
+//     revalidate: 1,
+//   };
+// }
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const programs = await prisma.program.findMany({
+//     select: {
+//       id: true,
+//     },
+//   });
+//   return {
+//     paths: programs.map((program) => ({
+//       params: {
+//         id: program.id,
+//       },
+//     })),
+//     // https://nextjs.org/docs/basic-features/data-fetching#fallback-blocking
+//     fallback: 'blocking',
+//   };
+// };

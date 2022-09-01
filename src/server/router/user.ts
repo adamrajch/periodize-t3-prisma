@@ -1,10 +1,10 @@
 /* eslint-disable no-new */
 import * as trpc from '@trpc/server';
-import { createProgramScehma } from 'src/schema/program.schema';
+import { createProgramSchema } from 'src/schema/program.schema';
 import { createRouter } from './context';
 
 export const userRouter = createRouter().mutation('create-program', {
-  input: createProgramScehma,
+  input: createProgramSchema,
   async resolve({ ctx, input }) {
     if (!ctx.session?.user || !ctx.userId) {
       return new trpc.TRPCError({

@@ -11,6 +11,10 @@ export const ProgramRecordSchema = z.object({
 export const ProgramLiftSchema = z.object({
   name: z.string(),
   record: z.array(ProgramRecordSchema),
+  time: z.boolean(),
+  distance: z.boolean(),
+  load: z.boolean(),
+  category: z.array(z.string()).nullish(),
 });
 export const ProgramClusterSchema = z.object({
   name: z.string(),

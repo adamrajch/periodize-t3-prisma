@@ -39,7 +39,6 @@ export interface Cluster {
   name: string;
   lifts: Lift[];
   rest?: number;
-  restUnit: string;
   summary?: string;
   sets: number;
 }

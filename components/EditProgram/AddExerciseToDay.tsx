@@ -1,6 +1,7 @@
-import { Select } from '@mantine/core';
+import { ActionIcon, Select } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { Exercise } from '@prisma/client';
+import { IconX } from '@tabler/icons';
 import { useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 import { ProgramSchema } from 'types/Program';
@@ -18,6 +19,13 @@ export default function AddExerciseToDaySearch({ form, bi, wi, di }: ExerciseSel
     enabled: search.length > 2,
   });
 
+  function handleSearch(e: any) {
+    setSearch(e.currentTarget.value);
+  }
+
+  function clearSearch() {
+    setSearch('');
+  }
   const selectResults = data
     ? data.map((r) => ({
         value: r.id,
@@ -28,12 +36,22 @@ export default function AddExerciseToDaySearch({ form, bi, wi, di }: ExerciseSel
   return (
     <>
       <Select
-        placeholder="Select Exercise"
+        placeholder="Search Exercises"
+        radius="xl"
+        size="md"
         searchable
         clearable
         allowDeselect
         data={selectResults}
         maxDropdownHeight={200}
+        rightSection={
+          search.length ? (
+            <ActionIcon size={32} radius="xl" onClick={clearSearch}>
+              <IconX size={18} stroke={1.5} />
+            </ActionIcon>
+          ) : null
+        }
+        rightSectionWidth={42}
         onSearchChange={(query: string) => {
           setSearch(query);
         }}
@@ -63,6 +81,7 @@ export default function AddExerciseToDaySearch({ form, bi, wi, di }: ExerciseSel
               ],
             });
           }
+          setSearch('');
         }}
       />
     </>

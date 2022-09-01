@@ -18,6 +18,8 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import {
+  IconCopy,
+  IconDeviceFloppy,
   IconDotsVertical,
   IconDownload,
   IconMessageCircle,
@@ -28,9 +30,11 @@ import {
 } from '@tabler/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { trpc } from 'src/utils/trpc';
 
 import { Block, Cluster, Day, Lift, Week } from 'types/Program';
+import AddExerciseToDaySearch from './AddExerciseToDay';
 import AddBlockModal from './Blocks/AddBlockModal';
 import ExerciseSection from './Exercise';
 
@@ -334,7 +338,21 @@ export default function EditProgramForm({ data }: FormProps) {
                                           <Menu.Item icon={<IconMessageCircle size={14} />}>
                                             Templates
                                           </Menu.Item>
-
+                                          <Menu.Item icon={<IconDeviceFloppy size={14} />}>
+                                            Save as template
+                                          </Menu.Item>
+                                          <Menu.Item
+                                            icon={<IconCopy size={14} />}
+                                            onClick={() =>
+                                              // duplicate the week in the block
+                                              form.insertListItem(
+                                                `blocks.${bi}.weeks`,
+                                                form.values.blocks[bi].weeks[wi]
+                                              )
+                                            }
+                                          >
+                                            Duplicate Week
+                                          </Menu.Item>
                                           <Menu.Divider />
                                           <Menu.Item
                                             color="red"
@@ -423,46 +441,12 @@ export default function EditProgramForm({ data }: FormProps) {
                                                 />
                                               </Group>
                                               <Group>
-                                                {/* <AddExerciseToDaySearch
+                                                <AddExerciseToDaySearch
                                                   form={form}
                                                   bi={bi}
                                                   wi={wi}
                                                   di={di}
-                                                /> */}
-                                                <Button
-                                                  leftIcon={<IconPlus />}
-                                                  onClick={() => {
-                                                    form.insertListItem(
-                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
-                                                      {
-                                                        name: '',
-                                                        records: [],
-                                                      }
-                                                    );
-                                                  }}
-                                                >
-                                                  Lift
-                                                </Button>
-                                                <Button
-                                                  leftIcon={<IconPlus />}
-                                                  onClick={() => {
-                                                    form.insertListItem(
-                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
-                                                      {
-                                                        type: 'cluster',
-                                                        name: '',
-                                                        lifts: [],
-                                                        rest: 0,
-                                                        restUnit: 'sec',
-                                                        weight: {
-                                                          load: 135,
-                                                        },
-                                                      }
-                                                    );
-                                                  }}
-                                                >
-                                                  Cluster
-                                                </Button>
+                                                />
                                                 <Menu shadow="md" width={200}>
                                                   <Menu.Target>
                                                     <ActionIcon>
@@ -506,22 +490,80 @@ export default function EditProgramForm({ data }: FormProps) {
 
                                             <Stack>
                                               {day.exercises?.length ? (
-                                                <>
-                                                  {day.exercises.map(
-                                                    (ex: Lift | Cluster, ei: number) => (
-                                                      <div>
-                                                        <ExerciseSection
-                                                          form={form}
-                                                          ex={ex}
-                                                          ei={ei}
-                                                          bi={bi}
-                                                          wi={wi}
-                                                          di={di}
-                                                        />
+                                                <DragDropContext
+                                                  onDragEnd={(result) => {
+                                                    if (!result.destination && !result.combine) {
+                                                      console.log(result);
+                                                      return;
+                                                    }
+                                                    if (result.combine) {
+                                                      console.log('combining: ', result);
+                                                      if (
+                                                        'lifts' in
+                                                        day.exercises[
+                                                          parseInt(result.combine.draggableId, 10)
+                                                        ]
+                                                      ) {
+                                                        //is going in cluster
+                                                      } else {
+                                                        //create a cluster
+                                                      }
+                                                    }
+
+                                                    console.log(result);
+                                                    form.reorderListItem(
+                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                      {
+                                                        from: result.source.index,
+                                                        to: result.destination?.index,
+                                                      }
+                                                    );
+                                                  }}
+                                                >
+                                                  <Droppable
+                                                    droppableId="droppable"
+                                                    direction="vertical"
+                                                    isCombineEnabled
+                                                  >
+                                                    {(provided) => (
+                                                      <div
+                                                        {...provided.droppableProps}
+                                                        ref={provided.innerRef}
+                                                      >
+                                                        {day.exercises.map(
+                                                          (ex: Lift | Cluster, ei: number) => (
+                                                            <div>
+                                                              <Draggable
+                                                                key={`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}`}
+                                                                index={ei}
+                                                                draggableId={ei.toString()}
+                                                              >
+                                                                {(provided2) => (
+                                                                  <Group
+                                                                    ref={provided2.innerRef}
+                                                                    mt="xs"
+                                                                    {...provided2.draggableProps}
+                                                                  >
+                                                                    <ExerciseSection
+                                                                      form={form}
+                                                                      ex={ex}
+                                                                      ei={ei}
+                                                                      bi={bi}
+                                                                      wi={wi}
+                                                                      di={di}
+                                                                      {...provided2.dragHandleProps}
+                                                                    />
+                                                                  </Group>
+                                                                )}
+                                                              </Draggable>
+                                                            </div>
+                                                          )
+                                                        )}
+                                                        {provided.placeholder}
                                                       </div>
-                                                    )
-                                                  )}
-                                                </>
+                                                    )}
+                                                  </Droppable>
+                                                </DragDropContext>
                                               ) : (
                                                 <div>no exercises</div>
                                               )}
@@ -534,7 +576,10 @@ export default function EditProgramForm({ data }: FormProps) {
                                     <div>no days</div>
                                   )}
                                 </Stack>
-                                <Code>{JSON.stringify(blocks[bi], null, 4)}</Code>
+                                <Code>{JSON.stringify(blocks[bi], null, 2)}</Code>
+                                <Group position="right">
+                                  <Button type="submit">Save</Button>
+                                </Group>
                               </Container>
                             </Tabs.Panel>
                           ))}
@@ -548,9 +593,6 @@ export default function EditProgramForm({ data }: FormProps) {
               </Tabs>
             ) : null}
           </Stack>
-        </Group>
-        <Group position="right">
-          <Button type="submit">Save</Button>
         </Group>
       </form>
     </div>

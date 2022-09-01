@@ -1,6 +1,7 @@
-import { Button, Code, Group, Modal, Select, Stack } from '@mantine/core';
+import { ActionIcon, Box, Button, Group, Modal, Stack, Text, TextInput } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { Exercise } from '@prisma/client';
+import { IconSearch, IconX } from '@tabler/icons';
 import { useState } from 'react';
 import { trpc } from 'src/utils/trpc';
 import { ProgramSchema } from 'types/Program';
@@ -21,6 +22,13 @@ export default function AddExerciseModal({ form, bi, wi, di }: ModalProps) {
     enabled: search.length > 2,
   });
 
+  function handleSearch(e) {
+    setSearch(e.currentTarget.value);
+  }
+
+  function clearSearch() {
+    setSearch('');
+  }
   function handleClose() {
     setSearch('');
     setOpened(false);
@@ -36,7 +44,23 @@ export default function AddExerciseModal({ form, bi, wi, di }: ModalProps) {
       <Modal opened={opened} onClose={handleClose} size="lg" centered withCloseButton={false}>
         <Stack sx={{ minHeight: '40vh' }}>
           <Group grow>
-            <Select
+            <TextInput
+              icon={<IconSearch size={18} stroke={1.5} />}
+              radius="xl"
+              size="md"
+              placeholder="Search Exercises"
+              value={search}
+              onChange={(e) => handleSearch(e)}
+              rightSection={
+                search.length ? (
+                  <ActionIcon size={32} radius="xl" onClick={clearSearch}>
+                    <IconX size={18} stroke={1.5} />
+                  </ActionIcon>
+                ) : null
+              }
+              rightSectionWidth={42}
+            />
+            {/* <Select
               placeholder="Select Exercise"
               searchable
               clearable
@@ -70,14 +94,22 @@ export default function AddExerciseModal({ form, bi, wi, di }: ModalProps) {
                   ],
                 });
               }}
-            />
+            /> */}
           </Group>
 
           {data?.map((r, ri: number) => (
-            <div>{r.name}</div>
+            <Box
+              sx={(theme) => ({
+                backgroundColor: theme.colors.dark[8],
+                padding: 16,
+                borderRadius: theme.radius.md,
+              })}
+            >
+              <Text>{r.name}</Text>
+            </Box>
           ))}
         </Stack>
-        <Code>{JSON.stringify(search, null, 2)}</Code>
+
         <Group position="right">
           <Button>Add</Button>
         </Group>

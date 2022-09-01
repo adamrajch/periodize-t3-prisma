@@ -2,9 +2,7 @@ import { createStyles, Group, NativeSelect, NumberInput, Stack, Text } from '@ma
 import { UseFormReturnType } from '@mantine/form';
 
 import { Lift, ProgramSchema } from 'types/Program';
-import ClusterExerciseSelect from './ClusterExerciseSelect';
 import LiftMenu from './Exercise/LiftMenu';
-import ExerciseSelect from './ExerciseSelect';
 
 interface ExerciseSectionProps {
   form: UseFormReturnType<ProgramSchema>;
@@ -67,12 +65,9 @@ export default function LiftSection({
   return (
     <Stack className={classes.liftContainer}>
       <Group position="apart">
-        {li !== undefined ? (
-          <ClusterExerciseSelect form={form} bi={bi} wi={wi} di={di} ei={ei} li={li} />
-        ) : (
-          <ExerciseSelect form={form} bi={bi} wi={wi} di={di} ei={ei} />
-        )}
-
+        <Text transform="uppercase">
+          {form.values.blocks[bi].weeks[wi].days[di].exercises[ei].name}
+        </Text>
         <LiftMenu deleteLift={deleteLift} insertRecord={insertRecord} lift={lift} li={li} />
       </Group>
       {lift.records?.length ? (

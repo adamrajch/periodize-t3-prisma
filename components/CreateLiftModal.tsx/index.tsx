@@ -27,7 +27,15 @@ export default function CreateLiftModal() {
     },
   });
 
-  const form = useForm({
+  interface FormValues {
+    name: string;
+    load: boolean;
+    distance: boolean;
+    time: boolean;
+    category: string[];
+  }
+
+  const form = useForm<FormValues>({
     initialValues: {
       name: '',
       category: [],
@@ -48,16 +56,11 @@ export default function CreateLiftModal() {
     form.reset();
   }
 
-  type FormValues = typeof form.values;
-
   function handleSubmit(values: FormValues) {
     setLoading(true);
 
     try {
-      mutation.mutate({
-        ...form.values,
-        category,
-      });
+      mutation.mutate({ ...form.values, category });
       console.log(mutation.data?.id);
     } catch (err) {
       console.log(err);
@@ -106,6 +109,7 @@ export default function CreateLiftModal() {
               transitionTimingFunction="ease"
               value={category}
               onChange={setCategory}
+              // {...form.getInputProps('category')}
             />
 
             <Group>
