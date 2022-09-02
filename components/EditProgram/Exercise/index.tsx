@@ -26,34 +26,20 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius.sm,
   },
 }));
-export default function ExerciseSection({
-  form,
-  ex,
-  ei,
-  bi,
-  wi,
-  di,
-  ...rest
-}: ExerciseSectionProps) {
+export default function ExerciseSection({ form, ex, ei, bi, wi, di }: ExerciseSectionProps) {
   const { classes } = useStyles();
   if (!('type' in ex)) {
     return (
-      <div {...rest}>
-        <LiftSection
-          form={form}
-          lift={ex}
-          ei={ei}
-          bi={bi}
-          wi={wi}
-          di={di}
-          path={`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}`}
-        />
-      </div>
+      <LiftSection
+        form={form}
+        lift={ex}
+        bi={bi}
+        wi={wi}
+        di={di}
+        ei={ei}
+        path={`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}`}
+      />
     );
   }
-  return (
-    <div {...rest}>
-      <ClusterSection form={form} ex={ex} ei={ei} bi={bi} wi={wi} di={di} />
-    </div>
-  );
+  return <ClusterSection form={form} ex={ex} ei={ei} bi={bi} wi={wi} di={di} />;
 }

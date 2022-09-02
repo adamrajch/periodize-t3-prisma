@@ -492,38 +492,89 @@ export default function EditProgramForm({ data }: FormProps) {
                                               {day.exercises?.length ? (
                                                 <DragDropContext
                                                   onDragEnd={(result) => {
+                                                    console.log(result);
                                                     if (!result.destination && !result.combine) {
-                                                      console.log(result);
                                                       return;
                                                     }
-                                                    if (result.combine) {
-                                                      console.log('combining: ', result);
-                                                      if (
-                                                        'lifts' in
-                                                        day.exercises[
-                                                          parseInt(result.combine.draggableId, 10)
-                                                        ]
-                                                      ) {
-                                                        //is going in cluster
-                                                      } else {
-                                                        //create a cluster
-                                                      }
-                                                    }
 
-                                                    console.log(result);
-                                                    form.reorderListItem(
-                                                      `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
-                                                      {
-                                                        from: result.source.index,
-                                                        to: result.destination?.index,
+                                                    if (result.type === 'EXERCISES') {
+                                                      if (result.combine) {
+                                                        console.log('combining: ', result);
+                                                        if (
+                                                          'lifts' in
+                                                          day.exercises[
+                                                            parseInt(result.combine.draggableId, 10)
+                                                          ]
+                                                        ) {
+                                                          //is going in cluster
+                                                          form.insertListItem(
+                                                            `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${result.combine.draggableId}.lifts`,
+                                                            form.values.blocks[bi].weeks[wi].days[
+                                                              di
+                                                            ].exercises[result.source.index]
+                                                          );
+                                                        } else {
+                                                          //creating cluster
+                                                          form.setFieldValue(
+                                                            `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${result.combine.draggableId}`,
+                                                            {
+                                                              type: 'cluster',
+                                                              name: '',
+                                                              set: 1,
+                                                              summary: '',
+                                                              rest: null,
+                                                              lifts: [
+                                                                {
+                                                                  ...form.values.blocks[bi].weeks[
+                                                                    wi
+                                                                  ].days[di].exercises[
+                                                                    result.combine.draggableId
+                                                                  ],
+                                                                },
+                                                                {
+                                                                  ...form.values.blocks[bi].weeks[
+                                                                    wi
+                                                                  ].days[di].exercises[
+                                                                    result.source.index
+                                                                  ],
+                                                                },
+                                                              ],
+                                                            }
+                                                          );
+                                                        }
+                                                        //delete the dragged element
+                                                        form.removeListItem(
+                                                          `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                          result.source.index
+                                                        );
+                                                      } else {
+                                                        //reorder logic , find if reordering exercises, or lifts in cluster (type is the index)
+                                                        form.reorderListItem(
+                                                          `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                          {
+                                                            from: result.source.index,
+                                                            to: result.destination?.index,
+                                                          }
+                                                        );
                                                       }
-                                                    );
+                                                    } else {
+                                                      // moving in superset
+                                                      console.log('reordering in a cluster');
+                                                      form.reorderListItem(
+                                                        `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${result.draggableId[0]}.lifts`,
+                                                        {
+                                                          from: result.source.index,
+                                                          to: result.destination?.index,
+                                                        }
+                                                      );
+                                                    }
                                                   }}
                                                 >
                                                   <Droppable
                                                     droppableId="droppable"
                                                     direction="vertical"
                                                     isCombineEnabled
+                                                    type="EXERCISES"
                                                   >
                                                     {(provided) => (
                                                       <div
@@ -539,21 +590,24 @@ export default function EditProgramForm({ data }: FormProps) {
                                                                 draggableId={ei.toString()}
                                                               >
                                                                 {(provided2) => (
-                                                                  <Group
-                                                                    ref={provided2.innerRef}
+                                                                  <Box
                                                                     mt="xs"
+                                                                    ref={provided2.innerRef}
                                                                     {...provided2.draggableProps}
                                                                   >
-                                                                    <ExerciseSection
-                                                                      form={form}
-                                                                      ex={ex}
-                                                                      ei={ei}
-                                                                      bi={bi}
-                                                                      wi={wi}
-                                                                      di={di}
+                                                                    <div
                                                                       {...provided2.dragHandleProps}
-                                                                    />
-                                                                  </Group>
+                                                                    >
+                                                                      <ExerciseSection
+                                                                        form={form}
+                                                                        ex={ex}
+                                                                        ei={ei}
+                                                                        bi={bi}
+                                                                        wi={wi}
+                                                                        di={di}
+                                                                      />
+                                                                    </div>
+                                                                  </Box>
                                                                 )}
                                                               </Draggable>
                                                             </div>

@@ -1,11 +1,5 @@
 import { ActionIcon, Group, Menu } from '@mantine/core';
-import {
-  IconDotsVertical,
-  IconMessageCircle,
-  IconPlus,
-  IconSettings,
-  IconTrash,
-} from '@tabler/icons';
+import { IconDotsVertical, IconMessageCircle, IconSettings, IconTrash } from '@tabler/icons';
 
 interface ClusterMenuProps {
   addLift: () => void;
@@ -15,9 +9,6 @@ interface ClusterMenuProps {
 export default function ClusterMenu({ addLift, deleteCluster }: ClusterMenuProps) {
   return (
     <Group>
-      <ActionIcon onClick={addLift}>
-        <IconPlus />
-      </ActionIcon>
       <Menu shadow="md" width={200}>
         <Menu.Target>
           <ActionIcon>

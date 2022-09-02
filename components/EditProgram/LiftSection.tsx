@@ -66,8 +66,11 @@ export default function LiftSection({
     <Stack className={classes.liftContainer}>
       <Group position="apart">
         <Text transform="uppercase">
-          {form.values.blocks[bi].weeks[wi].days[di].exercises[ei].name}
+          {li !== undefined
+            ? form.values.blocks[bi].weeks[wi].days[di].exercises[ei].lifts[li].name
+            : form.values.blocks[bi].weeks[wi].days[di].exercises[ei].name}
         </Text>
+
         <LiftMenu deleteLift={deleteLift} insertRecord={insertRecord} lift={lift} li={li} />
       </Group>
       {lift.records?.length ? (

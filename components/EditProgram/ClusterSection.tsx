@@ -1,5 +1,6 @@
 import { createStyles, Group, Stack, TextInput } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { Cluster, Lift, ProgramSchema } from 'types/Program';
 import LiftSection from './LiftSection';
@@ -54,22 +55,33 @@ export default function ClusterSection({ form, ex, ei, bi, wi, di }: ExerciseSec
         <ClusterMenu addLift={addLift} deleteCluster={deleteCluster} />
       </Group>
       <Stack>
-        {ex.lifts.length ? (
-          <>
-            {ex.lifts.map((lift: Lift, li: number) => (
-              <LiftSection
-                form={form}
-                lift={lift}
-                ei={ei}
-                bi={bi}
-                wi={wi}
-                di={di}
-                li={li}
-                path={`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts.${li}`}
-              />
-            ))}
-          </>
-        ) : null}
+        <Droppable droppableId={`droppable${ei}`} type={`${ei}`}>
+          {(provided) => (
+            <Stack ref={provided.innerRef}>
+              {ex.lifts?.map((lift: Lift, li: number) => (
+                <Draggable key={`${ei}${li}`} draggableId={`${ei}${li}`} index={li}>
+                  {(provided2) => (
+                    <div ref={provided2.innerRef} {...provided2.draggableProps}>
+                      <div {...provided2.dragHandleProps}>
+                        <LiftSection
+                          form={form}
+                          lift={lift}
+                          ei={ei}
+                          bi={bi}
+                          wi={wi}
+                          di={di}
+                          li={li}
+                          path={`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts.${li}`}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </Stack>
+          )}
+        </Droppable>
       </Stack>
     </Stack>
   );
