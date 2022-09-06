@@ -23,6 +23,7 @@ export default function EditProgramPage() {
     return null;
   }
 
+  console.log('edit page : ', data);
   const { title, description, isPublic, tags } = data;
   return (
     <DashboardShell>

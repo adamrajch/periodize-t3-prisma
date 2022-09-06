@@ -37,13 +37,14 @@ model Program{
 	id          String  @id @default(uuid())
 	title       String	
 	description String?
-    author		User	@relation(fields:[authorId], references:[id])
-	authorId	String 
-	isPublic	Boolean @default(false)
-	tags		String[]
-	schema		Json?	 
-	createdAt	DateTime	@default(now())
-	updatedAt	DateTime 	@updatedAt
+  author			User	@relation(fields:[authorId], references:[id])
+	authorId		String 
+	isPublic		Boolean @default(false)
+	tags				String[]
+	schema			Json?
+	meta				Json?	 
+	createdAt		DateTime	@default(now())
+	updatedAt		DateTime 	@updatedAt
 }
 
 model Exercise{

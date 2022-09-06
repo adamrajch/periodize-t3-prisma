@@ -3,7 +3,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  Code,
   Collapse,
   Container,
   createStyles,
@@ -134,30 +133,11 @@ export default function EditProgramForm({ data }: FormProps) {
     },
   });
 
-  const initialBlocks = data?.schema?.blocks as Block[];
-
+  const initialBlocks = data?.schema as Block[];
+  console.log('edit schema : ', initialBlocks);
   const form = useForm({
     initialValues: {
-      blocks: initialBlocks || [
-        {
-          name: '',
-          summary: '',
-          phase: 'hypertrophy',
-          weeks: [
-            {
-              name: '',
-              summary: '',
-              days: [
-                {
-                  name: 'Day 1',
-                  summary: '',
-                  exercises: [],
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      blocks: initialBlocks,
     },
 
     validate: {
@@ -180,14 +160,13 @@ export default function EditProgramForm({ data }: FormProps) {
 
   async function handleSubmit() {
     setLoading(true);
-    console.log('submitting');
+    console.log('submitting: ', form.values.blocks);
     try {
       await mutation.mutate({
         id,
         data: form.values.blocks,
       });
-      console.log(mutation.data?.schema);
-      console.log(mutation.data?.updatedAt);
+      console.log('new program saved');
     } catch (err) {
       alert(err);
     }
@@ -195,7 +174,6 @@ export default function EditProgramForm({ data }: FormProps) {
     setLoading(false);
   }
 
-  const selectData = blocks.map((block, bi) => ({ value: bi.toString(), label: block.name }));
   const { classes } = useStyles({ weekViewWide });
   return (
     <div>
@@ -285,12 +263,12 @@ export default function EditProgramForm({ data }: FormProps) {
             {blocks.length ? (
               <Tabs value={`${blockTab}`} keepMounted={false}>
                 {blocks.map((block: Block, bi: number) => (
-                  <Tabs.Panel value={`${bi}`}>
+                  <Tabs.Panel value={`${bi}`} key={bi}>
                     <Tabs value={`${weekTab}`} keepMounted={false}>
                       {block.weeks.length ? (
                         <>
                           {block.weeks.map((week: Week, wi: number) => (
-                            <Tabs.Panel value={`${wi}`}>
+                            <Tabs.Panel value={`${wi}`} key={wi}>
                               <Container size="md">
                                 <Stack my={12} sx={{ padding: 12 }}>
                                   <Group position="apart">
@@ -313,13 +291,14 @@ export default function EditProgramForm({ data }: FormProps) {
                                       </ActionIcon>
                                       <Button
                                         leftIcon={<IconPlus />}
-                                        onClick={() =>
+                                        onClick={() => {
                                           form.insertListItem(`blocks.${bi}.weeks.${wi}.days`, {
-                                            name: '',
+                                            name: `Day ${week.days.length + 1}`,
                                             summary: '',
                                             exercises: [],
-                                          })
-                                        }
+                                          });
+                                          setDayTab(week.days.length);
+                                        }}
                                       >
                                         Day
                                       </Button>
@@ -411,6 +390,7 @@ export default function EditProgramForm({ data }: FormProps) {
                                               value={`${di}`}
                                               onClick={() => setDayTab(di)}
                                               sx={{ padding: '16px 20px' }}
+                                              key={di}
                                             >
                                               {di + 1}
                                             </Tabs.Tab>
@@ -419,7 +399,7 @@ export default function EditProgramForm({ data }: FormProps) {
                                       </Group>
 
                                       {week.days.map((day: Day, di: number) => (
-                                        <Tabs.Panel value={`${di}`}>
+                                        <Tabs.Panel value={`${di}`} key={di}>
                                           <Stack
                                             sx={(theme) => ({
                                               backgroundColor: theme.colors.dark[8],
@@ -528,7 +508,10 @@ export default function EditProgramForm({ data }: FormProps) {
                                                                   ...form.values.blocks[bi].weeks[
                                                                     wi
                                                                   ].days[di].exercises[
-                                                                    result.combine.draggableId
+                                                                    parseInt(
+                                                                      result.combine.draggableId,
+                                                                      10
+                                                                    )
                                                                   ],
                                                                 },
                                                                 {
@@ -549,24 +532,29 @@ export default function EditProgramForm({ data }: FormProps) {
                                                         );
                                                       } else {
                                                         //reorder logic , find if reordering exercises, or lifts in cluster (type is the index)
+                                                        // eslint-disable-next-line no-lonely-if
+                                                        if (result.destination) {
+                                                          form.reorderListItem(
+                                                            `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                            {
+                                                              from: result.source.index,
+                                                              to: result.destination.index,
+                                                            }
+                                                          );
+                                                        }
+                                                      }
+                                                    } else {
+                                                      // moving in superset
+                                                      // eslint-disable-next-line no-lonely-if
+                                                      if (result.destination) {
                                                         form.reorderListItem(
-                                                          `blocks.${bi}.weeks.${wi}.days.${di}.exercises`,
+                                                          `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${result.draggableId[0]}.lifts`,
                                                           {
                                                             from: result.source.index,
                                                             to: result.destination?.index,
                                                           }
                                                         );
                                                       }
-                                                    } else {
-                                                      // moving in superset
-                                                      console.log('reordering in a cluster');
-                                                      form.reorderListItem(
-                                                        `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${result.draggableId[0]}.lifts`,
-                                                        {
-                                                          from: result.source.index,
-                                                          to: result.destination?.index,
-                                                        }
-                                                      );
                                                     }
                                                   }}
                                                 >
@@ -583,7 +571,7 @@ export default function EditProgramForm({ data }: FormProps) {
                                                       >
                                                         {day.exercises.map(
                                                           (ex: Lift | Cluster, ei: number) => (
-                                                            <div>
+                                                            <div key={ei}>
                                                               <Draggable
                                                                 key={`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}`}
                                                                 index={ei}
@@ -630,9 +618,12 @@ export default function EditProgramForm({ data }: FormProps) {
                                     <div>no days</div>
                                   )}
                                 </Stack>
-                                <Code>{JSON.stringify(blocks[bi], null, 2)}</Code>
+
+                                {/* <Code>{JSON.stringify(form.values.blocks, null, 2)}</Code> */}
                                 <Group position="right">
-                                  <Button type="submit">Save</Button>
+                                  <Button type="submit" loading={loading}>
+                                    Save
+                                  </Button>
                                 </Group>
                               </Container>
                             </Tabs.Panel>

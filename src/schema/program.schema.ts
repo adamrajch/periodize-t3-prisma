@@ -3,26 +3,34 @@ import z from 'zod';
 export const ProgramRecordSchema = z.object({
   sets: z.number(),
   reps: z.number(),
-  load: z.number().nullish(),
-  distance: z.number().nullish(),
   rpe: z.number().gte(0).lte(10).nullish(),
   percentage: z.number().gte(0).lte(100).nullish(),
+  distance: z.object({
+    unit: z.string(),
+    length: z.number()
+  }).nullish(),
+  weight: z.object({
+    unit: z.string(),
+    load: z.number()
+  }).nullish(),
+  time: z.number().nullish()
 });
 export const ProgramLiftSchema = z.object({
+  id: z.string(),
   name: z.string(),
-  record: z.array(ProgramRecordSchema),
   time: z.boolean(),
-  distance: z.boolean(),
   load: z.boolean(),
-  category: z.array(z.string()).nullish(),
+  distance: z.boolean(),
+  records: z.array(ProgramRecordSchema),
 });
 export const ProgramClusterSchema = z.object({
+  type: z.string(),
   name: z.string(),
-  lifts: z.array(ProgramLiftSchema),
   rest: z.number().nullish(),
   restUnit: z.string().nullish(),
   summary: z.string().nullish(),
   sets: z.number(),
+  lifts: z.array(ProgramLiftSchema),
 });
 export const ProgramExerciseSchema = z.array(ProgramLiftSchema.or(ProgramClusterSchema));
 
@@ -55,40 +63,14 @@ export const createProgramSchema = z.object({
     .min(2, 'Minimum name length is 2 characters')
     .max(30, 'Max name length is 20 characters'),
   description: z.string().max(30, 'Max name length is 20 characterse').nullish(),
-  schema: z.object({
-    blocks: ProgramBlockSchema,
-  }),
+  schema: ProgramBlockSchema,
 });
 
 export type CreateProgramInput = z.TypeOf<typeof createProgramSchema>;
 
-const blockSchema = z.array(
-  z.object({
-    name: z.string(),
-    summary: z.string().nullish(),
-    phase: z.string(),
-    weeks: z
-      .array(
-        z.object({
-          name: z.string(),
-          summary: z.string().nullish(),
-          days: z
-            .array(
-              z.object({
-                name: z.string(),
-                summary: z.string().nullish(),
-              })
-            )
-            .nullish(),
-        })
-      )
-      .nullish(),
-  })
-);
-
 export const editProgramSchema = z.object({
   id: z.string(),
-  data: blockSchema,
+  data: ProgramBlockSchema,
 });
 
 export const getSingleProgramSchema = z.object({

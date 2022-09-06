@@ -11,11 +11,9 @@ interface LiftMenuProps {
 export default function LiftMenu({ deleteLift, insertRecord, lift, li }: LiftMenuProps) {
   return (
     <Group>
-      {lift.id ? (
-        <ActionIcon onClick={insertRecord}>
-          <IconPlus />
-        </ActionIcon>
-      ) : null}
+      <ActionIcon onClick={insertRecord}>
+        <IconPlus />
+      </ActionIcon>
 
       <ActionIcon onClick={deleteLift}>
         <IconX />

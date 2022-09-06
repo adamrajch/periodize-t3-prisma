@@ -59,10 +59,11 @@ export default function AddExerciseToDaySearch({ form, bi, wi, di }: ExerciseSel
           const selected = data?.find((exercise: Exercise) => exercise.id === e);
           if (selected?.id) {
             form.insertListItem(`blocks.${bi}.weeks.${wi}.days.${di}.exercises`, {
-              name: selected?.name,
-              load: selected?.load,
-              distance: selected?.distance,
-              time: selected?.time,
+              id: selected.id,
+              name: selected.name,
+              load: selected.load,
+              distance: selected.distance,
+              time: selected.time,
               records: [
                 {
                   sets: 5,

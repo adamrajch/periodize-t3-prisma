@@ -39,6 +39,16 @@ export default function ClusterSection({ form, ex, ei, bi, wi, di }: ExerciseSec
     form.removeListItem(`blocks.${bi}.weeks.${wi}.days.${di}.exercises`, ei);
   }
 
+  function flatten() {
+    //spread the cluster lifts as exercises
+    const arr = form.values.blocks[bi].weeks[wi].days[di].exercises;
+    const liftsArr = form.values.blocks[bi].weeks[wi].days[di].exercises[ei].lifts;
+    form.setFieldValue(`blocks.${bi}.weeks.${wi}.days.${di}.exercises`, [
+      ...form.values.blocks[bi].weeks[wi].days[di].exercises.slice(0, ei),
+      ...liftsArr,
+      ...form.values.blocks[bi].weeks[wi].days[di].exercises.slice(ei + 1),
+    ]);
+  }
   return (
     <Stack className={classes.clusterContainer}>
       <Group position="apart">
@@ -52,7 +62,7 @@ export default function ClusterSection({ form, ex, ei, bi, wi, di }: ExerciseSec
           {...form.getInputProps(`blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.name`)}
         />
 
-        <ClusterMenu addLift={addLift} deleteCluster={deleteCluster} />
+        <ClusterMenu addLift={addLift} deleteCluster={deleteCluster} flatten={flatten} />
       </Group>
       <Stack>
         <Droppable droppableId={`droppable${ei}`} type={`${ei}`}>

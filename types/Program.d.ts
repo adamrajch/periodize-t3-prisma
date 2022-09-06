@@ -1,10 +1,11 @@
 export interface ProgramType {
   id: string;
   title: string;
-  description?: string | null;
+  description?: string;
   isPublic: boolean;
   tags: any;
-  schema: any;
+  schema: Block[];
+  meta?:any;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -19,18 +20,17 @@ export interface Record {
     length: number;
   };
   weight?: {
-    unit?: string;
-    load?: number;
+    unit: string;
+    load: number;
   };
   time?: number;
 }
 export interface Lift {
-  id?: string;
-  selectedName: string;
+  id: string;
   name: string;
-  load?: boolean;
-  time?: boolean;
-  distance?: boolean;
+  load: boolean;
+  time: boolean;
+  distance: boolean;
   records: Record[];
 }
 
@@ -51,14 +51,14 @@ export interface Day {
 export interface Week {
   name: string;
   summary?: string;
-  days: any;
+  days: Day[];
 }
 
 export interface Block {
   name: string;
   summary?: string;
   weeks: Week[];
-  phase: string;
+  phase?: string;
 }
 export interface ProgramSchema {
   blocks: Block[];

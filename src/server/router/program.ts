@@ -106,9 +106,7 @@ export const programRouter = createProtectedRouter()
           id: input.id,
         },
         data: {
-          schema: {
-            blocks: input.data,
-          },
+          schema: input.data,
         },
       });
 
