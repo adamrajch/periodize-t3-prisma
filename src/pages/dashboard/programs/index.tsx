@@ -25,6 +25,12 @@ export default function ProgramsHome() {
     },
   });
 
+  const deleteActiveMutation = trpc.useMutation(['activeProgram.deleteActiveProgram'], {
+    onSuccess() {
+      utils.invalidateQueries(['auth.getUser']);
+    },
+  });
+
   if (error) {
     return <NextError title={error.message} statusCode={error.data?.httpStatus ?? 500} />;
   }
@@ -51,15 +57,16 @@ export default function ProgramsHome() {
     }
   }
 
-  async function deactivateProgram(id: string) {
+  async function deleteActiveProgram(id: string) {
     try {
-      createActiveProgramMutation.mutate({
+      deleteActiveMutation.mutate({
         programId: id,
       });
     } catch (err) {
       alert(err);
     }
   }
+
   const rows = data?.programs.map((p) => {
     const openModal = () =>
       openConfirmModal({
@@ -69,6 +76,8 @@ export default function ProgramsHome() {
         onCancel: () => console.log('Cancel'),
         onConfirm: () => handleDeleteProgram(p.id),
       });
+
+    const activeMatch = data.activePrograms.find((a) => a.programId === p.id);
 
     return (
       <tr key={p.id}>
@@ -82,10 +91,10 @@ export default function ProgramsHome() {
         <td>{p.updatedAt === p.createdAt ? '-' : p.updatedAt.toLocaleDateString()}</td>
         <td>
           <Group>
-            {data.activePrograms.findIndex((a) => a.programId === p.id) === -1 ? (
-              <Button onClick={() => setActiveProgram(p.id)}>Activate</Button>
+            {activeMatch ? (
+              <Button onClick={() => deleteActiveProgram(activeMatch.id)}>Deactivate</Button>
             ) : (
-              <Button>Deactivate</Button>
+              <Button onClick={() => setActiveProgram(p.id)}>Activate</Button>
             )}
             <Link passHref href={`/dashboard/program/edit/${p.id}`}>
               <ActionIcon size="sm">
@@ -112,7 +121,7 @@ export default function ProgramsHome() {
         children: <Text size="sm">Are you sure you want to delete this program?</Text>,
         labels: { confirm: 'Confirm', cancel: 'Cancel' },
         onCancel: () => console.log('Cancel'),
-        onConfirm: () => handleDeleteProgram(p.id),
+        onConfirm: () => deleteActiveProgram(p.id),
       });
 
     return (
@@ -127,7 +136,6 @@ export default function ProgramsHome() {
         <td>{p.updatedAt === p.createdAt ? '-' : p.updatedAt.toLocaleDateString()}</td>
         <td>
           <Group position="right">
-            <Button>Deactivate</Button>
             <Link passHref href={`/dashboard/program/edit/${p.id}`}>
               <ActionIcon size="sm">
                 <IconEdit />
