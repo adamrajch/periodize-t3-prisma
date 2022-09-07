@@ -3,6 +3,8 @@ npx prisma init
 
 npx prisma migrate dev --name
 restart npm run dev
+restart typescript server
+restart prisma studio
 
 invalidating queries
 const utils = trpc.useContext();

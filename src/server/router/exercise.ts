@@ -2,6 +2,7 @@
 import * as trpc from '@trpc/server';
 import { createExerciseScehma } from 'src/schema/exercise.schema';
 import { InputIdSchema, InputStringSchema } from 'src/schema/general.schema';
+import { z } from 'zod';
 import { createProtectedRouter } from './protected-router';
 
 export const exerciseRouter = createProtectedRouter()
@@ -64,6 +65,52 @@ export const exerciseRouter = createProtectedRouter()
       });
 
       return exercises;
+    },
+  })
+  .query('getPaginatedExercises', {
+    input: z.object({
+      limit: z.number().min(1).max(5).nullish(),
+      cursor: z.any(), // <-- "cursor" needs to exist, but can be any type
+    }),
+    async resolve({ ctx, input }) {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+      const exercises = await ctx.prisma.exercise.findMany({
+        take: limit + 1,
+        orderBy: [
+          {
+            name: 'asc',
+          },
+        ],
+        cursor: cursor || undefined,
+        where: {
+          OR: [
+            {
+              userId: {
+                equals: ctx.userId,
+              },
+            },
+            {
+              user: {
+                role: {
+                  equals: 'ADMIN',
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      let nextCursor: typeof cursor | undefined;
+      if (exercises.length > limit) {
+        const nextItem = exercises.pop();
+        nextCursor = nextItem!.name;
+      }
+
+      return {
+        exercises,
+        nextCursor,
+      };
     },
   })
   .query('searchExercises', {

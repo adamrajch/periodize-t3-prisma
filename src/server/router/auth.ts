@@ -25,6 +25,10 @@ export const authRouter = createRouter()
     async resolve({ ctx }) {
       return await ctx.prisma.user.findFirst({
         where: { id: ctx.user?.id },
+        include: {
+          programs: true,
+          activePrograms: true,
+        },
       });
     },
   });

@@ -14,6 +14,21 @@ export default function LiftManager({ data }: { data: any }) {
     },
   });
 
+  const {
+    data: paginatedData,
+    isLoading,
+    error,
+  } = trpc.useInfiniteQuery(
+    [
+      'exercise.getPaginatedExercises',
+      {
+        limit: 10,
+      },
+    ],
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
   async function handleDelete(id: string) {
     try {
       mutation.mutate({
@@ -68,7 +83,6 @@ export default function LiftManager({ data }: { data: any }) {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
-      {value === 'user' ? <>user lifts</> : null}
     </>
   );
 }
