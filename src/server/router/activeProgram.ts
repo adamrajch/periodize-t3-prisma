@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 
-import { ProgramIdInput } from 'src/schema/activeProgram.schema';
+import { IdInput, ProgramIdInput } from 'src/schema/activeProgram.schema';
 import { createProtectedRouter } from './protected-router';
 
 export const activeProgramRouter = createProtectedRouter()
@@ -19,7 +19,7 @@ export const activeProgramRouter = createProtectedRouter()
 
       const activeProgram = await ctx.prisma.activeProgram.create({
         data: {
-          name: program.title || 'Nani',
+          title: program.title,
           schema: program.schema || { hi: 'nani' },
           summary: program.description,
           user: {
@@ -46,5 +46,28 @@ export const activeProgramRouter = createProtectedRouter()
       });
 
       return program;
+    },
+  })
+  .query('getAll', {
+    async resolve({ ctx }) {
+      const programs = await ctx.prisma.activeProgram.findMany({
+        where: {
+          userId: ctx.userId,
+        },
+      });
+
+      return programs;
+    },
+  })
+  .query('getById', {
+    input: IdInput,
+    async resolve({ ctx, input }) {
+      const programs = await ctx.prisma.activeProgram.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+
+      return programs;
     },
   });

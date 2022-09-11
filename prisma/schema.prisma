@@ -58,7 +58,7 @@ model ActiveProgram{
 	userId	String
 	createdAt		DateTime	@default(now())
 	updatedAt		DateTime 	@updatedAt
-	name			String
+	title			String
 	summary		String?
 	schema		Json
 	currentWorkout Json?
