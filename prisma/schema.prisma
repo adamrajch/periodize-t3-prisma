@@ -29,6 +29,7 @@ model User {
 	activeProgramList	String[]
 	activePrograms	ActiveProgram[]
 	workouts				Workout[]
+	records					Record[]
 	role			Role	@default(User)
 }	
 
@@ -45,7 +46,7 @@ model Program{
 	authorId		String 
 	isPublic		Boolean @default(false)
 	tags				String[]
-	schema			Json?
+	schema			Json
 	meta				Json?	 
 	createdAt		DateTime	@default(now())
 	updatedAt		DateTime 	@updatedAt
@@ -53,31 +54,79 @@ model Program{
 }
 
 model ActiveProgram{
-	id			String  	@id @default(cuid())
-	user		User		@relation(fields:[userId], references: [id])
-	userId	String
-	createdAt		DateTime	@default(now())
-	updatedAt		DateTime 	@updatedAt
-	title			String
-	summary		String?
-	schema		Json
-	currentWorkout Json?
-	nextWorkout	Json?
-	lastWorkout		Json?
-	program Program @relation(fields: [programId], references: [id])
-	programId	String
-	workouts	Workout[]
+	id								String  	@id @default(cuid())
+	user							User		@relation(fields:[userId], references: [id])
+	userId						String
+	createdAt					DateTime	@default(now())
+	updatedAt					DateTime 	@updatedAt
+	title							String
+	summary						String?
+	programSchema			Json
+	currentWorkout 		Json?
+	nextWorkout				Json?
+	lastWorkout				Json?
+	program 					Program @relation(fields: [programId], references: [id])
+	programId					String
+	schema						Json
+
+	numberOfDays 			Int	
+	currentDayIndex 	Int	@default(0)
+	timesCompleted 		Int	@default(0)
+	workouts					WorkoutsOnPrograms[]
+	records						RecordsOnPrograms[]
 }
 
 model Workout{
-	id			String  	@id @default(cuid())
+	id					String  	@id @default(cuid())
 	createdAt		DateTime	@default(now())
 	updatedAt		DateTime 	@updatedAt
-	schema		Json
-	user		User		@relation(fields:[userId], references: [id])
-	userId	String
-	program	ActiveProgram	@relation(fields:[programId], references: [id])
-	programId	String
+	schema			Json
+	user				User		@relation(fields:[userId], references: [id])
+	userId			String
+	program			WorkoutsOnPrograms[]
+	records			Record[]
+}
+
+model WorkoutsOnPrograms {
+	program			ActiveProgram		@relation(fields:[programId], references: [id])
+	programId		String
+	workout			Workout	@relation(fields:[workoutId], references: [id])
+	workoutId		String
+	assignedAt 	DateTime @default(now())
+
+	@@id([programId, workoutId])
+}
+
+
+model Record{
+	id					String  	@id @default(cuid())
+	createdAt		DateTime	@default(now())
+	updatedAt		DateTime 	@updatedAt
+	name				String
+	sets				Int
+	reps				Int
+	rpe					Int?
+	percentage	Int?
+	time				Int?
+	weight			Json?
+	distance		Json?
+	user				User		@relation(fields:[userId], references: [id])
+	userId			String
+	workout			Workout @relation(fields:[workoutId], references: [id])
+	workoutId		String
+	programs		RecordsOnPrograms[]
+	// exercise	ActiveProgram	@relation(fields:[programId], references: [id])
+	// exerciseId	String
+}
+
+model RecordsOnPrograms {
+	program			ActiveProgram		@relation(fields:[programId], references: [id])
+	programId		String
+	record			Record	@relation(fields:[recordId], references: [id])
+	recordId		String
+	assignedAt 	DateTime @default(now())
+
+	@@id([programId, recordId])
 }
 
 model Template{

@@ -5,7 +5,7 @@ export interface ProgramType {
   isPublic: boolean;
   tags: any;
   schema: Block[];
-  meta?:any;
+  meta?: any;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -62,4 +62,13 @@ export interface Block {
 }
 export interface ProgramSchema {
   blocks: Block[];
+}
+
+export interface ActiveProgramDay {
+  dayName: string;
+  description?: string;
+  block: number;
+  week: number;
+  day: number;
+  exercises: (Lift | Cluster)[];
 }
