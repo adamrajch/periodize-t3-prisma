@@ -59,6 +59,7 @@ export default function AddExerciseToDaySearch({ form, bi, wi, di }: ExerciseSel
           const selected = data?.find((exercise: Exercise) => exercise.id === e);
           if (selected?.id) {
             form.insertListItem(`blocks.${bi}.weeks.${wi}.days.${di}.exercises`, {
+              type: 'single',
               id: selected.id,
               name: selected.name,
               load: selected.load,
@@ -68,16 +69,11 @@ export default function AddExerciseToDaySearch({ form, bi, wi, di }: ExerciseSel
                 {
                   sets: 5,
                   reps: 5,
-                  rpe: null,
-                  percentage: null,
-                  weight: selected?.load
-                    ? {
-                        unit: 'lbs',
-                        load: 135,
-                      }
-                    : null,
-                  distance: selected?.distance ? 5 : null,
-                  time: selected?.time ? 5 : null,
+                  rpe: undefined,
+                  percentage: undefined,
+                  weight: undefined,
+                  distance: selected?.distance ? 5 : undefined,
+                  time: selected?.time ? 5 : undefined,
                 },
               ],
             });

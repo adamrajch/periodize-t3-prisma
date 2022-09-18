@@ -3,13 +3,14 @@ import {
   Box,
   createStyles,
   Group,
+  Menu,
   NativeSelect,
   NumberInput,
   Stack,
   Text,
 } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
-import { IconX } from '@tabler/icons';
+import { IconSettings, IconX } from '@tabler/icons';
 
 import { Lift, ProgramSchema } from 'types/Program';
 import LiftMenu from './Exercise/LiftMenu';
@@ -46,9 +47,9 @@ export default function LiftSection({ form, lift, ei, bi, wi, di, li, path }: Li
           sets: 5,
           reps: 5,
           rpe: 5,
-          percentage: null,
-          distance: lift.distance ? 5 : null,
-          weight: lift.load ? { unit: 'lbs', load: 135 } : null,
+          percent: undefined,
+          distance: undefined,
+          load: undefined,
         })
       : form.insertListItem(
           `blocks.${bi}.weeks.${wi}.days.${di}.exercises.${ei}.lifts.${li}.records`,
@@ -56,9 +57,9 @@ export default function LiftSection({ form, lift, ei, bi, wi, di, li, path }: Li
             sets: 5,
             reps: 5,
             rpe: 5,
-            percentage: null,
-            distance: lift.distance ? 5 : null,
-            weight: lift.load ? { unit: 'lbs', load: 135 } : null,
+            percent: undefined,
+            distance: undefined,
+            load: undefined,
           }
         );
   }
@@ -94,9 +95,17 @@ export default function LiftSection({ form, lift, ei, bi, wi, di, li, path }: Li
             {lift.time ? <Text sx={{ flex: 2 }}>time</Text> : null}
             {lift.distance ? <Text sx={{ flex: 2 }}>distance</Text> : null}
             <Box sx={{ flex: 0 }}>
-              <ActionIcon>
-                <IconX />
-              </ActionIcon>
+              <Menu shadow="md" width={120} withArrow>
+                <Menu.Target>
+                  <ActionIcon>
+                    <IconSettings />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item>Toggle RPE</Menu.Item>
+                  <Menu.Item>Messages</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
             </Box>
           </Group>
           {lift.records.map((rec, ri) => (
@@ -116,13 +125,13 @@ export default function LiftSection({ form, lift, ei, bi, wi, di, li, path }: Li
               <NumberInput
                 placeholder="5"
                 max={10}
-                min={0}
+                min={1}
                 {...form.getInputProps(`${path}.records.${ri}.rpe`)}
               />
               <NumberInput
                 placeholder="5"
                 max={100}
-                min={0}
+                min={1}
                 step={10}
                 {...form.getInputProps(`${path}.records.${ri}.percent`)}
               />
@@ -132,7 +141,7 @@ export default function LiftSection({ form, lift, ei, bi, wi, di, li, path }: Li
                   placeholder="5"
                   max={100}
                   min={0}
-                  {...form.getInputProps(`${path}.records.${ri}.weight.load`)}
+                  {...form.getInputProps(`${path}.records.${ri}.load`)}
                   rightSectionWidth={62}
                   rightSection={
                     <NativeSelect
@@ -142,7 +151,7 @@ export default function LiftSection({ form, lift, ei, bi, wi, di, li, path }: Li
                       ]}
                       onChange={(event) =>
                         form.setFieldValue(
-                          `${path}.records.${ri}.weight.unit`,
+                          `${path}.records.${ri}.loadUnit`,
                           event.currentTarget.value
                         )
                       }

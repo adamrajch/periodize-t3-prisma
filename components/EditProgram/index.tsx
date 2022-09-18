@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Box,
   Button,
+  Code,
   Collapse,
   Container,
   createStyles,
@@ -16,6 +17,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import {
   IconCopy,
   IconDeviceFloppy,
@@ -130,11 +132,15 @@ export default function EditProgramForm({ data }: FormProps) {
   const mutation = trpc.useMutation(['program.editProgramSchema'], {
     onSuccess() {
       utils.invalidateQueries(['program.getById', { id }]);
+      showNotification({
+        title: 'Program saved!',
+        message: 'Hehe 🤥',
+      });
     },
   });
 
   const initialBlocks = data?.schema as Block[];
-  console.log('edit schema : ', initialBlocks);
+
   const form = useForm({
     initialValues: {
       blocks: initialBlocks,
@@ -162,16 +168,17 @@ export default function EditProgramForm({ data }: FormProps) {
     setLoading(true);
     console.log('submitting: ', form.values.blocks);
     try {
+      console.log('mutating');
       await mutation.mutate({
         id,
         data: form.values.blocks,
       });
-      console.log('new program saved');
+      console.log(mutation.data);
     } catch (err) {
       alert(err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   const { classes } = useStyles({ weekViewWide });
@@ -180,6 +187,7 @@ export default function EditProgramForm({ data }: FormProps) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+
           handleSubmit();
         }}
       >
@@ -247,6 +255,7 @@ export default function EditProgramForm({ data }: FormProps) {
               </ActionIcon>
               {blocks[blockTab].weeks.map((_, wi: number) => (
                 <UnstyledButton
+                  key={wi}
                   className={classes.tabButton}
                   sx={(theme) => ({
                     backgroundColor: wi === weekTab ? theme.colors.blue[6] : 'transparent',
@@ -400,11 +409,7 @@ export default function EditProgramForm({ data }: FormProps) {
 
                                       {week.days.map((day: Day, di: number) => (
                                         <Tabs.Panel value={`${di}`} key={di}>
-                                          <Stack
-                                            sx={(theme) => ({
-                                              backgroundColor: theme.colors.dark[8],
-                                            })}
-                                          >
+                                          <Stack>
                                             <Group position="apart">
                                               <Group align="flex-start">
                                                 <TextInput
@@ -500,9 +505,9 @@ export default function EditProgramForm({ data }: FormProps) {
                                                             {
                                                               type: 'cluster',
                                                               name: '',
-                                                              set: 1,
+                                                              sets: 1,
                                                               summary: '',
-                                                              rest: null,
+                                                              rest: undefined,
                                                               lifts: [
                                                                 {
                                                                   ...form.values.blocks[bi].weeks[
@@ -621,7 +626,11 @@ export default function EditProgramForm({ data }: FormProps) {
 
                                 {/* <Code>{JSON.stringify(form.values.blocks, null, 2)}</Code> */}
                                 <Group position="right">
-                                  <Button type="submit" loading={loading}>
+                                  <Button
+                                    type="submit"
+                                    loading={loading}
+                                    disabled={form.values.blocks === initialBlocks}
+                                  >
                                     Save
                                   </Button>
                                 </Group>
@@ -637,6 +646,7 @@ export default function EditProgramForm({ data }: FormProps) {
                 ))}
               </Tabs>
             ) : null}
+            <Code>{JSON.stringify(form.values.blocks[0].weeks[0].days[0].exercises, null, 2)}</Code>
           </Stack>
         </Group>
       </form>

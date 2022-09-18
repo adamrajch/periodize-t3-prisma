@@ -3,19 +3,15 @@ import z from 'zod';
 export const ProgramRecordSchema = z.object({
   sets: z.number(),
   reps: z.number(),
-  rpe: z.number().gte(0).lte(10).nullish(),
-  percentage: z.number().gte(0).lte(100).nullish(),
-  distance: z.object({
-    unit: z.string(),
-    length: z.number()
-  }).nullish(),
-  weight: z.object({
-    unit: z.string(),
-    load: z.number()
-  }).nullish(),
-  time: z.number().nullish()
+  rpe: z.number().gte(0).lte(10).optional(),
+  percent: z.number().gte(0).lte(100).optional(),
+  distance: z.number().optional(),
+  load: z.number().optional(),
+  loadUnit: z.string().optional(),
+  time: z.number().optional(),
 });
 export const ProgramLiftSchema = z.object({
+  type: z.literal('single'),
   id: z.string(),
   name: z.string(),
   time: z.boolean(),
@@ -23,17 +19,20 @@ export const ProgramLiftSchema = z.object({
   distance: z.boolean(),
   records: z.array(ProgramRecordSchema),
 });
+
 export const ProgramClusterSchema = z.object({
-  type: z.string(),
+  type: z.literal('cluster'),
   name: z.string(),
-  rest: z.number().nullish(),
-  restUnit: z.string().nullish(),
-  summary: z.string().nullish(),
+  rest: z.number().optional(),
+  summary: z.string().optional(),
   sets: z.number(),
   lifts: z.array(ProgramLiftSchema),
 });
-export const ProgramExerciseSchema = z.array(ProgramLiftSchema.or(ProgramClusterSchema));
+// export const ProgramExerciseSchema = z.array(z.union([ProgramLiftSchema, ProgramClusterSchema]));
 
+export const ProgramExerciseSchema = z.array(
+  z.discriminatedUnion('type', [ProgramLiftSchema, ProgramClusterSchema])
+);
 export const ProgramDaySchema = z.array(
   z.object({
     name: z.string(),

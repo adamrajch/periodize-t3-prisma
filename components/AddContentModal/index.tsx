@@ -42,6 +42,7 @@ export default function AddContentModal() {
   const mutation = trpc.useMutation(['program.create-program'], {
     onSuccess() {
       utils.invalidateQueries(['program.getUserPrograms']);
+      utils.invalidateQueries(['auth.getUser']);
     },
   });
   const router = useRouter();

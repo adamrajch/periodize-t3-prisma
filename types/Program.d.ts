@@ -15,17 +15,13 @@ export interface Record {
   reps: number;
   rpe?: number;
   percentage?: number;
-  distance?: {
-    unit: string;
-    length: number;
-  };
-  weight?: {
-    unit: string;
-    load: number;
-  };
+  distance?: number;
+  load?: number;
+  loadUnit?: string;
   time?: number;
 }
 export interface Lift {
+  type: 'single';
   id: string;
   name: string;
   load: boolean;

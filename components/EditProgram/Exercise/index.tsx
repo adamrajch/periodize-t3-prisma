@@ -28,7 +28,7 @@ const useStyles = createStyles((theme) => ({
 }));
 export default function ExerciseSection({ form, ex, ei, bi, wi, di }: ExerciseSectionProps) {
   const { classes } = useStyles();
-  if (!('type' in ex)) {
+  if (ex.type === 'single') {
     return (
       <LiftSection
         form={form}
