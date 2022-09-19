@@ -13,10 +13,10 @@ import { IconSettings, IconX } from '@tabler/icons';
 
 import { useAtom } from 'jotai';
 import { Record } from 'types/Program';
-import { blockAtom, dayAtom, pathAtom, weekAtom } from '../EditProgramForm/ControlAtoms';
-import { useProgramFormContext } from '../EditProgramForm/FormContext';
+import { blockAtom, dayAtom, getPath, weekAtom } from '../ControlAtoms';
+import { useProgramFormContext } from '../FormContext';
 
-import LiftMenu from './Exercise/LiftMenu';
+import LiftMenu from './LiftMenu';
 
 interface LiftSectionProps {
   ei: number;
@@ -35,7 +35,7 @@ export default function LiftSection({ ei, li }: LiftSectionProps) {
   const [blockTab, setBlock] = useAtom(blockAtom);
   const [weekTab, setWeek] = useAtom(weekAtom);
   const [dayTab, setDay] = useAtom(dayAtom);
-  const [path] = useAtom(pathAtom);
+  const path = getPath();
 
   // might have to test undefined
   const lift = li

@@ -2,6 +2,7 @@ import { blockAtom, dayAtom, weekAtom } from '@/components/EditProgramForm/Contr
 import { useProgramFormContext } from '@/components/EditProgramForm/FormContext';
 import { useAtom } from 'jotai';
 import ClusterSection from '../ClusterSection';
+
 import LiftSection from '../LiftSection';
 
 interface ExerciseSectionProps {
@@ -16,7 +17,7 @@ export default function ExerciseSection({ ei }: ExerciseSectionProps) {
   const isSingle =
     form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei].type === 'single';
   if (isSingle) {
-    return <LiftSection form={form} lift={ex} bi={bi} wi={wi} di={di} ei={ei} />;
+    return <LiftSection ei={ei} />;
   }
-  return <ClusterSection form={form} ex={ex} ei={ei} bi={bi} wi={wi} di={di} />;
+  return <ClusterSection ei={ei} />;
 }
