@@ -1,7 +1,8 @@
 import DashboardShell from '@/components/Dashboard';
-import EditProgramForm from '@/components/EditProgram';
 import DetailsForm from '@/components/EditProgram/DetailsForm';
+import EditProgramForm from '@/components/EditProgramForm';
 import { Box, Container, Tabs, Title } from '@mantine/core';
+import { Prisma } from '@prisma/client';
 import { IconMessageCircle, IconPhoto } from '@tabler/icons';
 import NextError from 'next/error';
 import { useRouter } from 'next/router';
@@ -25,6 +26,7 @@ export default function EditProgramPage() {
 
   console.log('edit page : ', data);
   const { title, description, isPublic, tags } = data;
+  const blocks = data.schema as Prisma.JsonArray;
   return (
     <DashboardShell>
       <Box sx={{ height: '100%' }}>
@@ -37,7 +39,7 @@ export default function EditProgramPage() {
         >
           Edit: {data.title}
         </Title>
-        <Tabs orientation="vertical" defaultValue="gallery" keepMounted={false}>
+        <Tabs defaultValue="gallery" keepMounted={false}>
           <Tabs.List>
             <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
               Details
@@ -59,7 +61,8 @@ export default function EditProgramPage() {
           </Tabs.Panel>
 
           <Tabs.Panel value="messages" pl="xs">
-            <EditProgramForm data={data} />
+            {/* <EditProgram data={data} /> */}
+            <EditProgramForm blocks={blocks} />
           </Tabs.Panel>
         </Tabs>
       </Box>

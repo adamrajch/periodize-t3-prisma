@@ -3,7 +3,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  Code,
   Collapse,
   Container,
   createStyles,
@@ -41,8 +40,8 @@ import ExerciseSection from './Exercise';
 
 // type NonNullable<T> = Exclude<T, null | undefined>;
 interface FormProps {
-  // data: inferQueryOutput<'program.getById'>;
-  data: any;
+  data: ProgramSchema;
+  // data: any;
 }
 
 const useStyles = createStyles((theme, { weekViewWide }: { weekViewWide: boolean }) => ({
@@ -646,7 +645,7 @@ export default function EditProgramForm({ data }: FormProps) {
                 ))}
               </Tabs>
             ) : null}
-            <Code>{JSON.stringify(form.values.blocks[0].weeks[0].days[0].exercises, null, 2)}</Code>
+            {/* <Code>{JSON.stringify(form.values.blocks[0].weeks[0].days[0].exercises, null, 2)}</Code> */}
           </Stack>
         </Group>
       </form>
