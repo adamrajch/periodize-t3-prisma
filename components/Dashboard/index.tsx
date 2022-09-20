@@ -198,7 +198,9 @@ export default function DashboardShell({ children }: ShellProps) {
         </Header>
       }
     >
-      <Box className={classes.content}>{children}</Box>
+      <Box className={classes.content} mt="xl">
+        {children}
+      </Box>
     </AppShell>
   );
 }

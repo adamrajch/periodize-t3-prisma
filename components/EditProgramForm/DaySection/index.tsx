@@ -1,4 +1,4 @@
-import { Stack } from '@mantine/core';
+import { Group, Stack, Text } from '@mantine/core';
 import { useAtom } from 'jotai';
 import { blockAtom, dayAtom, weekAtom } from '../ControlAtoms';
 import { useProgramFormContext } from '../FormContext';
@@ -14,7 +14,15 @@ export default function DaySection() {
   return (
     <Stack>
       <DayHeader />
-      <Stack>{day.exercises?.length ? <DnDContext /> : <div>no exercises</div>}</Stack>
+      <Stack>
+        {day.exercises?.length ? (
+          <DnDContext />
+        ) : (
+          <Group position="center" mt="xl">
+            <Text size="xl">NO EXERCISES</Text>
+          </Group>
+        )}
+      </Stack>
     </Stack>
   );
 }

@@ -86,11 +86,11 @@ export default function UserPrograms() {
             <a>{p.title}</a>
           </Link>
         </td>
-        <td>{p.id}</td>
+
         <td>{p.createdAt.toLocaleDateString()}</td>
         <td>{p.updatedAt === p.createdAt ? '-' : p.updatedAt.toLocaleDateString()}</td>
         <td>
-          <Group>
+          <Group position="right">
             {activeMatch ? (
               <Button onClick={() => deleteActiveProgram(activeMatch.id)}>Deactivate</Button>
             ) : (
@@ -118,7 +118,6 @@ export default function UserPrograms() {
       <thead>
         <tr>
           <th>title</th>
-          <th>ProgramID</th>
           <th>created</th>
           <th>updated</th>
           <th />

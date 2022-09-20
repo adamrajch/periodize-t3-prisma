@@ -14,7 +14,7 @@ interface ExerciseSectionProps {
 
 const useStyles = createStyles((theme) => ({
   clusterContainer: {
-    padding: '12px',
+    padding: '6px',
     backgroundColor: theme.colors.dark[6],
     borderRadius: theme.radius.sm,
   },
@@ -63,11 +63,11 @@ export default function ClusterSection({ ei }: ExerciseSectionProps) {
           withAsterisk
           {...form.getInputProps(`${path}.${ei}.name`)}
         />
-
+        {/* <ClusterLiftControl /> */}
         <ClusterMenu addLift={addLift} deleteCluster={deleteCluster} flatten={flatten} />
       </Group>
       <Stack>
-        <Droppable droppableId={`droppable${ei}`} type={`${ei}`}>
+        <Droppable droppableId="lift" type="CLUSTER">
           {(provided) => (
             <Stack ref={provided.innerRef}>
               {ex.lifts?.map((lift: Lift, li: number) => (

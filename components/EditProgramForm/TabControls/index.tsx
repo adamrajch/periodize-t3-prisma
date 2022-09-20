@@ -1,17 +1,27 @@
-import AddBlockModal from '@/components/EditProgram/Blocks/AddBlockModal';
-import { ActionIcon, Box, Group, Stack, Text, UnstyledButton } from '@mantine/core';
+import { Button, Group, Select } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
 import { useAtom } from 'jotai';
 import { blockAtom, weekAtom } from '../ControlAtoms';
 import { useProgramFormContext } from '../FormContext';
+import AddBlockModal from './AddBlockModal';
 
 export default function TabControls() {
   const form = useProgramFormContext();
   const [blockTab, setBlock] = useAtom(blockAtom);
   const [weekTab, setWeek] = useAtom(weekAtom);
+
+  const data = form.values.blocks.map((b, bi: number) => ({
+    label: `Block ${(bi + 1).toString()}`,
+    value: bi.toString(),
+  }));
+
+  const weekData = form.values.blocks[blockTab].weeks.map((w, wi: number) => ({
+    label: `Week ${(wi + 1).toString()}`,
+    value: wi.toString(),
+  }));
   return (
-    <Group align="flex-start">
-      <Stack>
+    <Group position="apart" my="lg">
+      {/* <Stack>
         <AddBlockModal blocks={form.values.blocks} trigger="icon" highlight />
         {form.values.blocks.map((_, bi: number) => (
           <UnstyledButton
@@ -66,16 +76,46 @@ export default function TabControls() {
             </UnstyledButton>
           ))}
         </Stack>
+      </Group> */}
+
+      <Group>
+        <AddBlockModal blocks={form.values.blocks} trigger="button" highlight />
+        {form.values.blocks.length ? (
+          <Select
+            value={blockTab.toString()}
+            data={data}
+            onChange={(val) => (val ? setBlock(parseInt(val)) : setBlock(0))}
+          />
+        ) : null}
       </Group>
-      {/* <Stack>
-        <NativeSelect
-          value={`Block ${blockTab + 1}`}
-          data={form.values.blocks.map((b, bi) => `Block ${bi + 1}`)}
-          onChange={(event) => {
-            setBlockTab(event.currentTarget.value);
+      <Group position="right">
+        <Button
+          leftIcon={<IconPlus size={14} />}
+          onClick={() => {
+            form.insertListItem(`blocks.${blockTab}.weeks`, {
+              name: `Week ${form.values.blocks[blockTab].weeks.length + 1}`,
+              summary: '',
+              days: [
+                {
+                  name: '',
+                  summary: '',
+                  exercises: [],
+                },
+              ],
+            });
+            setWeek(weekTab + 1);
           }}
-        />
-      </Stack> */}
+        >
+          Week
+        </Button>
+        {form.values.blocks[blockTab].weeks.length ? (
+          <Select
+            value={weekTab.toString()}
+            data={weekData}
+            onChange={(val) => (val ? setWeek(parseInt(val)) : setWeek(0))}
+          />
+        ) : null}
+      </Group>
     </Group>
   );
 }

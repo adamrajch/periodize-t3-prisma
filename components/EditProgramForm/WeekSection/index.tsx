@@ -1,4 +1,4 @@
-import { Stack, Tabs } from '@mantine/core';
+import { Group, Stack, Tabs, Text } from '@mantine/core';
 import { useAtom } from 'jotai';
 import { blockAtom, dayAtom, weekAtom } from '../ControlAtoms';
 import DaySection from '../DaySection';
@@ -17,15 +17,19 @@ export default function WeekSection() {
       <WeekHeader />
       {week.days.length ? (
         <Tabs value={`${dayTab}`} keepMounted={false} variant="pills">
-          <DayController />
-          {week.days.map((day, di) => (
-            <Tabs.Panel value={`${di}`} key={di}>
-              <DaySection />
-            </Tabs.Panel>
-          ))}
+          <Stack>
+            <DayController />
+            {week.days.map((day, di) => (
+              <Tabs.Panel value={`${di}`} key={di}>
+                <DaySection />
+              </Tabs.Panel>
+            ))}
+          </Stack>
         </Tabs>
       ) : (
-        <div>no days</div>
+        <Group position="center" mt="xl">
+          <Text size="xl">NO DAYS</Text>
+        </Group>
       )}
     </Stack>
   );

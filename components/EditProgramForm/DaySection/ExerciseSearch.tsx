@@ -35,7 +35,7 @@ export default function ExerciseSearch() {
     <Select
       placeholder="Search Exercises"
       radius="xl"
-      size="md"
+      size="sm"
       searchable
       clearable
       allowDeselect

@@ -3,29 +3,49 @@ import { Box } from '@mantine/core';
 import { useAtom } from 'jotai';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { Cluster, Lift } from 'types/Program';
-import { blockAtom, dayAtom, weekAtom } from '../ControlAtoms';
+import { blockAtom, dayAtom, getPath, weekAtom } from '../ControlAtoms';
 import ExerciseSection from '../ExerciseSection';
 import { useProgramFormContext } from '../FormContext';
 
 export default function DnDContext() {
   const form = useProgramFormContext();
-  const [blockTab, setBlock] = useAtom(blockAtom);
-  const [weekTab, setWeek] = useAtom(weekAtom);
-  const [dayTab, setDay] = useAtom(dayAtom);
+  const [blockTab] = useAtom(blockAtom);
+  const [weekTab] = useAtom(weekAtom);
+  const [dayTab] = useAtom(dayAtom);
   const day = form.values.blocks[blockTab].weeks[weekTab].days[dayTab];
-  const path = `blocks.${blockTab}.weeks.${weekTab}.days.${dayTab}.exercises`;
+  const path = getPath();
   return (
     <DragDropContext
       onDragEnd={(result) => {
+        console.log(result);
+
         if (!result.destination && !result.combine) {
           return;
         }
 
+        if (result.type === 'CLUSTER') {
+          // rearange lifts inside cluster
+          if (result.destination && result.destination.index !== result.source.index) {
+            form.reorderListItem(`${path}.${result.draggableId[0]}.lifts`, {
+              from: result.source.index,
+              to: result.destination.index,
+            });
+          }
+          return;
+        }
+
         if (result.type === 'EXERCISES') {
+          const isCluster = 'lifts' in day.exercises[result.source.index];
+
           if (result.combine) {
             console.log('combining: ', result);
+            if (isCluster) {
+              // drag focus is on Cluster
+              return;
+            }
             if ('lifts' in day.exercises[parseInt(result.combine.draggableId, 10)]) {
-              //is going in cluster
+              //is going in cluster , add to cluster exercises
+
               form.insertListItem(
                 `${path}.${result.combine.draggableId}.lifts`,
                 form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[
@@ -65,15 +85,6 @@ export default function DnDContext() {
                 to: result.destination.index,
               });
             }
-          }
-        } else {
-          // moving in superset
-          // eslint-disable-next-line no-lonely-if
-          if (result.destination) {
-            form.reorderListItem(`${path}.${result.draggableId[0]}.lifts`, {
-              from: result.source.index,
-              to: result.destination?.index,
-            });
           }
         }
       }}

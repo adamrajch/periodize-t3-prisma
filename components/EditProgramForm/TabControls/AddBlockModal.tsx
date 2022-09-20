@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Button,
-  Code,
   Group,
   Modal,
   NativeSelect,
@@ -174,7 +173,7 @@ export default function AddBlockModal({ blocks, trigger, highlight }: AddBlockMo
               </Button>
             </Group>
           </Stack>
-          <Code>{JSON.stringify(form.values, null, 2)}</Code>
+          {/* <Code>{JSON.stringify(form.values, null, 2)}</Code> */}
         </form>
       </Modal>
       <Group position="center" m={0}>
@@ -183,7 +182,9 @@ export default function AddBlockModal({ blocks, trigger, highlight }: AddBlockMo
             <IconPlus color={highlight && !blocks.length ? 'gold' : 'white'} />
           </ActionIcon>
         ) : (
-          <Button onClick={() => setOpened(true)}>Add Block</Button>
+          <Button onClick={() => setOpened(true)} leftIcon={<IconPlus size={14} />}>
+            Block
+          </Button>
         )}
       </Group>
     </>

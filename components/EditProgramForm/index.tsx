@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 
-import { Code, Container, Group, Tabs } from '@mantine/core';
+import { Button, Container, Group, Stack, Tabs } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { trpc } from 'src/utils/trpc';
 import { Block } from 'types/Program';
 import { blockAtom, weekAtom } from './ControlAtoms';
 import { ProgramFormProvider, useProgramForm } from './FormContext';
@@ -14,11 +17,24 @@ interface EditProgramFormProps {
 }
 
 export default function EditProgramForm({ blocks }: EditProgramFormProps) {
+  const [loading, setLoading] = useState(false);
   const [blockTab] = useAtom(blockAtom);
   const [weekTab, setWeekTab] = useAtom(weekAtom);
   const form = useProgramForm({
     initialValues: {
       blocks,
+    },
+  });
+
+  const utils = trpc.useContext();
+  const id = useRouter().query.id as string;
+  const mutation = trpc.useMutation(['program.editProgramSchema'], {
+    onSuccess() {
+      utils.invalidateQueries(['program.getById', { id }]);
+      showNotification({
+        title: 'Program saved!',
+        message: 'Hehe 🤥',
+      });
     },
   });
 
@@ -29,14 +45,29 @@ export default function EditProgramForm({ blocks }: EditProgramFormProps) {
     }
   }, [blockTab]);
 
+  async function handleSubmit() {
+    setLoading(true);
+
+    try {
+      console.log('mutating');
+      await mutation.mutate({
+        id,
+        data: form.values.blocks,
+      });
+      console.log(mutation.data);
+    } catch (err) {
+      alert(err);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <ProgramFormProvider form={form}>
-      <Container size="xl">
-        <Group align="flex-start" noWrap>
-          <div style={{ flex: 'none' }}>
-            <TabControls />
-          </div>
-          <form onSubmit={form.onSubmit(() => {})} style={{ width: '100%' }}>
+      <Container size="xl" sx={{ padding: 0 }}>
+        <Stack>
+          <TabControls />
+
+          <form onSubmit={form.onSubmit(handleSubmit)} style={{ width: '100%' }}>
             <Tabs value={`${blockTab}`} keepMounted={false}>
               {form.values.blocks.map((block, bi) => (
                 <Tabs.Panel value={`${bi}`}>
@@ -51,8 +82,19 @@ export default function EditProgramForm({ blocks }: EditProgramFormProps) {
               ))}
             </Tabs>
           </form>
-        </Group>
-        <Code>Refactored: {JSON.stringify(form.values, null, 2)}</Code>
+
+          <Group position="right">
+            <Button
+              loading={loading}
+              disabled={form.values.blocks === blocks}
+              onClick={handleSubmit}
+            >
+              Save
+            </Button>
+          </Group>
+        </Stack>
+
+        {/* <Code>Refactored: {JSON.stringify(form.values, null, 2)}</Code> */}
       </Container>
     </ProgramFormProvider>
   );

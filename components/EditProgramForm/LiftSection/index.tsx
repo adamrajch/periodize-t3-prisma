@@ -1,20 +1,10 @@
-import {
-  ActionIcon,
-  Box,
-  createStyles,
-  Group,
-  Menu,
-  NativeSelect,
-  NumberInput,
-  Stack,
-  Text,
-} from '@mantine/core';
-import { IconSettings, IconX } from '@tabler/icons';
+import { ActionIcon, createStyles, Group, SimpleGrid, Stack, Text } from '@mantine/core';
 
 import { useAtom } from 'jotai';
 import { Record } from 'types/Program';
 import { blockAtom, dayAtom, getPath, weekAtom } from '../ControlAtoms';
 import { useProgramFormContext } from '../FormContext';
+import RecordSection from '../RecordSection';
 
 import LiftMenu from './LiftMenu';
 
@@ -36,11 +26,13 @@ export default function LiftSection({ ei, li }: LiftSectionProps) {
   const [weekTab, setWeek] = useAtom(weekAtom);
   const [dayTab, setDay] = useAtom(dayAtom);
   const path = getPath();
-
+  const liftPath = li === undefined ? `${path}.${ei}` : `${path}.${ei}.lifts.${li}`;
+  const recordsPath = `${liftPath}.records`;
   // might have to test undefined
-  const lift = li
-    ? form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei].lifts[li]
-    : form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei];
+  const lift =
+    li === undefined
+      ? form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei]
+      : form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei].lifts[li];
 
   function deleteLift() {
     li === undefined
@@ -49,29 +41,18 @@ export default function LiftSection({ ei, li }: LiftSectionProps) {
   }
 
   function insertRecord() {
-    li === undefined
-      ? form.insertListItem(`${path}.${ei}.records`, {
-          sets: 5,
-          reps: 5,
-          rpe: 5,
-          percent: undefined,
-          distance: undefined,
-          load: undefined,
-        })
-      : form.insertListItem(`${path}.${ei}.lifts.${li}.records`, {
-          sets: 5,
-          reps: 5,
-          rpe: 5,
-          percent: undefined,
-          distance: undefined,
-          load: undefined,
-        });
+    form.insertListItem(`${liftPath}.records`, {
+      sets: 5,
+      reps: 5,
+      rpe: 5,
+      percent: undefined,
+      distance: undefined,
+      load: undefined,
+    });
   }
 
   function deleteRecord(i: number) {
-    li === undefined
-      ? form.removeListItem(`${path}.${ei}.records`, i)
-      : form.removeListItem(`${path}.${ei}.lifts.${li}.records`, i);
+    form.removeListItem(`${liftPath}.records`, i);
   }
 
   return (
@@ -85,123 +66,20 @@ export default function LiftSection({ ei, li }: LiftSectionProps) {
       </Group>
       {lift.records?.length ? (
         <Stack>
-          <Group noWrap sx={{ textAlign: 'center' }}>
-            <Text sx={{ flex: 2 }}>Sets</Text>
-            <Text sx={{ flex: 2 }}>Reps</Text>
-            <Text sx={{ flex: 2 }}>RPE</Text>
-            <Text sx={{ flex: 2 }}>%1RM</Text>
-            {lift.load ? <Text sx={{ flex: 2 }}>Load</Text> : null}
-            {lift.time ? <Text sx={{ flex: 2 }}>time</Text> : null}
-            {lift.distance ? <Text sx={{ flex: 2 }}>distance</Text> : null}
-            <Box sx={{ flex: 0 }}>
-              <Menu shadow="md" width={120} withArrow>
-                <Menu.Target>
-                  <ActionIcon>
-                    <IconSettings />
-                  </ActionIcon>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item>Toggle RPE</Menu.Item>
-                  <Menu.Item>Messages</Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            </Box>
+          <Group>
+            <SimpleGrid cols={4} sx={{ textAlign: 'center', flex: 1 }}>
+              <Text>Sets</Text>
+              <Text>Reps</Text>
+              <Text>RPE</Text>
+              <Text>%1RM</Text>
+
+              {/* {lift.time ? <Text>time</Text> : null}
+            {lift.distance ? <Text>distance</Text> : null} */}
+            </SimpleGrid>
+            <ActionIcon />
           </Group>
           {lift.records.map((rec: Record, ri: number) => (
-            <Group noWrap key={ri}>
-              <NumberInput
-                placeholder="5"
-                max={1000}
-                min={0}
-                {...form.getInputProps(`${path}.records.${ri}.sets`)}
-              />
-              <NumberInput
-                placeholder="5"
-                max={1000}
-                min={0}
-                {...form.getInputProps(`${path}.records.${ri}.reps`)}
-              />
-              <NumberInput
-                placeholder="5"
-                max={10}
-                min={1}
-                {...form.getInputProps(`${path}.records.${ri}.rpe`)}
-              />
-              <NumberInput
-                placeholder="5"
-                max={100}
-                min={1}
-                step={10}
-                {...form.getInputProps(`${path}.records.${ri}.percent`)}
-              />
-              {lift.load ? (
-                <NumberInput
-                  sx={{ flexShrink: 2 }}
-                  placeholder="5"
-                  max={100}
-                  min={0}
-                  {...form.getInputProps(`${path}.records.${ri}.load`)}
-                  rightSectionWidth={62}
-                  rightSection={
-                    <NativeSelect
-                      data={[
-                        { value: 'lbs', label: 'lbs' },
-                        { value: 'kgs', label: 'kgs' },
-                      ]}
-                      onChange={(event) =>
-                        form.setFieldValue(
-                          `${path}.records.${ri}.loadUnit`,
-                          event.currentTarget.value
-                        )
-                      }
-                      styles={{
-                        input: {
-                          fontWeight: 500,
-                          borderTopLeftRadius: 0,
-                          borderBottomLeftRadius: 0,
-                        },
-                      }}
-                    />
-                  }
-                />
-              ) : null}
-              {lift.time ? (
-                <NumberInput
-                  placeholder="5"
-                  max={100}
-                  min={0}
-                  {...form.getInputProps(`${path}.records.${ri}.time`)}
-                />
-              ) : null}
-              {lift.distance ? (
-                <NumberInput
-                  placeholder="5"
-                  max={100}
-                  min={0}
-                  {...form.getInputProps(`${path}.records.${ri}.distance`)}
-                  rightSectionWidth={62}
-                  rightSection={
-                    <NativeSelect
-                      data={[
-                        { value: 'meter', label: 'm' },
-                        { value: 'foot', label: 'foot' },
-                        { value: 'yard', label: 'yard' },
-                      ]}
-                      styles={{
-                        input: {
-                          fontWeight: 500,
-                          borderTopLeftRadius: 0,
-                          borderBottomLeftRadius: 0,
-                        },
-                      }}
-                    />
-                  }
-                />
-              ) : null}
-              <ActionIcon onClick={() => deleteRecord(ri)} sx={{ flexShrink: 2 }}>
-                <IconX />
-              </ActionIcon>
-            </Group>
+            <RecordSection ri={ri} liftPath={liftPath} lift={lift} deleteRecord={deleteRecord} />
           ))}
         </Stack>
       ) : (

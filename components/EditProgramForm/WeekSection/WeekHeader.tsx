@@ -1,4 +1,4 @@
-import { Button, Group, Text, TextInput } from '@mantine/core';
+import { Button, Group, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
 import { useAtom } from 'jotai';
 import { blockAtom, dayAtom, weekAtom } from '../ControlAtoms';
@@ -12,16 +12,11 @@ export default function WeekHeader() {
   const [dayTab, setDay] = useAtom(dayAtom);
   const week = form.values.blocks[blockTab].weeks[weekTab];
   return (
-    <Group position="apart" grow>
-      <Group align="flex-start">
-        <Text size="lg" color="grape">
-          {weekTab + 1 > 9 ? weekTab : `0${weekTab + 1}`}
-        </Text>
-        <Text size="lg">Week {weekTab + 1}</Text>
+    <Group position="apart" grow noWrap>
+      <Group noWrap>
         <TextInput
           required
           withAsterisk
-          label="Week Name"
           placeholder={`Week ${weekTab + 1}`}
           variant="unstyled"
           size="lg"
@@ -29,9 +24,10 @@ export default function WeekHeader() {
           {...form.getInputProps(`blocks.${blockTab}.weeks.${weekTab}.name`)}
         />
       </Group>
-      <Group position="right">
+      <Group position="right" spacing="xs">
         <Button
           leftIcon={<IconPlus />}
+          disabled={week.days.length >= 7}
           onClick={() => {
             form.insertListItem(`blocks.${blockTab}.weeks.${weekTab}.days`, {
               name: `Day ${week.days.length + 1}`,
