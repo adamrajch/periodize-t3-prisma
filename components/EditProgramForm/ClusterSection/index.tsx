@@ -75,7 +75,7 @@ export default function ClusterSection({ ei }: ExerciseSectionProps) {
                   {(provided2) => (
                     <div ref={provided2.innerRef} {...provided2.draggableProps}>
                       <div {...provided2.dragHandleProps}>
-                        <LiftSection ei={ei} li={li} />
+                        <LiftSection ei={ei} li={li} lift={lift} />
                       </div>
                     </div>
                   )}

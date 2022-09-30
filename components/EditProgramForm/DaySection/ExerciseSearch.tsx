@@ -7,6 +7,11 @@ import { trpc } from 'src/utils/trpc';
 import { blockAtom, dayAtom, weekAtom } from '../ControlAtoms';
 import { useProgramFormContext } from '../FormContext';
 
+interface SelectType {
+  value: string;
+  label: string;
+}
+
 export default function ExerciseSearch() {
   const form = useProgramFormContext();
   const [blockTab, setBlock] = useAtom(blockAtom);
@@ -32,51 +37,92 @@ export default function ExerciseSearch() {
     : [];
 
   return (
-    <Select
-      placeholder="Search Exercises"
-      radius="xl"
-      size="sm"
-      searchable
-      clearable
-      allowDeselect
-      data={selectResults}
-      maxDropdownHeight={200}
-      rightSection={
-        search.length ? (
-          <ActionIcon size={32} radius="xl" onClick={clearSearch}>
-            <IconX size={18} stroke={1.5} />
-          </ActionIcon>
-        ) : null
-      }
-      rightSectionWidth={42}
-      onSearchChange={(query: string) => {
-        setSearch(query);
-      }}
-      onChange={(e) => {
-        const selected = data?.find((exercise: Exercise) => exercise.id === e);
-        if (selected?.id) {
-          form.insertListItem(`blocks.${blockTab}.weeks.${weekTab}.days.${dayTab}.exercises`, {
-            type: 'single',
-            id: selected.id,
-            name: selected.name,
-            load: selected.load,
-            distance: selected.distance,
-            time: selected.time,
-            records: [
-              {
-                sets: 5,
-                reps: 5,
-                rpe: undefined,
-                percentage: undefined,
-                weight: undefined,
-                distance: selected?.distance ? 5 : undefined,
-                time: selected?.time ? 5 : undefined,
-              },
-            ],
-          });
+    <>
+      <Select
+        placeholder="Search Exercises"
+        radius="xl"
+        size="sm"
+        searchable
+        clearable
+        allowDeselect
+        data={selectResults}
+        maxDropdownHeight={200}
+        rightSection={
+          search.length ? (
+            <ActionIcon size={32} radius="xl" onClick={clearSearch}>
+              <IconX size={18} stroke={1.5} />
+            </ActionIcon>
+          ) : null
         }
-        setSearch('');
-      }}
-    />
+        rightSectionWidth={42}
+        onSearchChange={(query: string) => {
+          setSearch(query);
+        }}
+        onChange={(e) => {
+          const selected = data?.find((exercise: Exercise) => exercise.id === e);
+          if (selected?.id) {
+            form.insertListItem(`blocks.${blockTab}.weeks.${weekTab}.days.${dayTab}.exercises`, {
+              type: 'single',
+              id: selected.id,
+              name: selected.name,
+              load: selected.load,
+              distance: selected.distance,
+              time: selected.time,
+              records: [
+                {
+                  sets: 5,
+                  reps: 5,
+                  rpe: undefined,
+                  percentage: undefined,
+                  weight: undefined,
+                  distance: selected?.distance ? 5 : undefined,
+                  time: selected?.time ? 5 : undefined,
+                },
+              ],
+            });
+          }
+          setSearch('');
+        }}
+      />
+      {/* <Autocomplete
+        placeholder="Search exercises"
+        // value={search}
+        onChange={(query: string) => {
+          setSearch(query);
+        }}
+        onItemSubmit={(e: SelectType) => {
+          const selected = data?.find((exercise: Exercise) => exercise.id === e.value);
+          if (selected?.id) {
+            form.insertListItem(`blocks.${blockTab}.weeks.${weekTab}.days.${dayTab}.exercises`, {
+              type: 'single',
+              id: selected.id,
+              name: selected.name,
+              load: selected.load,
+              distance: selected.distance,
+              time: selected.time,
+              records: [
+                {
+                  sets: 5,
+                  reps: 5,
+                  rpe: undefined,
+                  percentage: undefined,
+                  weight: undefined,
+                  distance: selected?.distance ? 5 : undefined,
+                  time: selected?.time ? 5 : undefined,
+                },
+              ],
+            });
+          }
+          setSearch('');
+        }}
+        data={selectResults}
+        // data={['React', 'Angular', 'Svelte', 'Vue']}
+        transition="pop-top-left"
+        transitionDuration={80}
+        transitionTimingFunction="ease"
+      />
+
+      <Code>Select Results: {JSON.stringify(selectResults, null, 2)} </Code> */}
+    </>
   );
 }

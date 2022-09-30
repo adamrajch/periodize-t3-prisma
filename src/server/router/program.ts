@@ -113,3 +113,15 @@ export const programRouter = createProtectedRouter()
       return program;
     },
   });
+
+interface Single {
+  title: string;
+  field: boolean;
+}
+interface Cluster {
+  title: string;
+  collection: Single[];
+}
+interface Arr {
+  arr: (Single | Cluster)[];
+}

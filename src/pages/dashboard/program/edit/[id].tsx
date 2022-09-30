@@ -1,5 +1,6 @@
 import DashboardShell from '@/components/Dashboard';
-import DetailsForm from '@/components/EditProgram/DetailsForm';
+import DetailsForm from '@/components/EditProgramDetailsForm';
+
 import EditProgramForm from '@/components/EditProgramForm';
 import { Box, Container, Tabs, Title } from '@mantine/core';
 import { Prisma } from '@prisma/client';
@@ -37,34 +38,35 @@ export default function EditProgramPage() {
             padding: theme.spacing.xl,
           })}
         >
-          Edit: {data.title}
+          {data.title}
         </Title>
-        <Tabs defaultValue="gallery" keepMounted={false}>
-          <Tabs.List>
-            <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
-              Details
-            </Tabs.Tab>
-            <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
-              Split
-            </Tabs.Tab>
-          </Tabs.List>
+        <Container sx={{ padding: 0 }}>
+          <Tabs defaultValue="gallery" keepMounted={false}>
+            <Tabs.List>
+              <Tabs.Tab value="gallery" icon={<IconPhoto size={14} />}>
+                Details
+              </Tabs.Tab>
+              <Tabs.Tab value="messages" icon={<IconMessageCircle size={14} />}>
+                Split
+              </Tabs.Tab>
+            </Tabs.List>
 
-          <Tabs.Panel value="gallery" pl="xs">
-            <Container size="sm">
-              <DetailsForm
-                title={title}
-                description={description || ''}
-                isPublic={isPublic}
-                tags={tags}
-              />
-            </Container>
-          </Tabs.Panel>
+            <Tabs.Panel value="gallery">
+              <Container size="sm">
+                <DetailsForm
+                  title={title}
+                  description={description || ''}
+                  isPublic={isPublic}
+                  tags={tags}
+                />
+              </Container>
+            </Tabs.Panel>
 
-          <Tabs.Panel value="messages" pl="xs">
-            {/* <EditProgram data={data} /> */}
-            <EditProgramForm blocks={blocks} />
-          </Tabs.Panel>
-        </Tabs>
+            <Tabs.Panel value="messages">
+              <EditProgramForm blocks={blocks} />
+            </Tabs.Panel>
+          </Tabs>
+        </Container>
       </Box>
     </DashboardShell>
   );

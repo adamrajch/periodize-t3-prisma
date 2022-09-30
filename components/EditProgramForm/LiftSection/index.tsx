@@ -1,8 +1,7 @@
 import { ActionIcon, createStyles, Group, SimpleGrid, Stack, Text } from '@mantine/core';
 
-import { useAtom } from 'jotai';
-import { Record } from 'types/Program';
-import { blockAtom, dayAtom, getPath, weekAtom } from '../ControlAtoms';
+import { Lift, Record } from 'types/Program';
+import { getPath } from '../ControlAtoms';
 import { useProgramFormContext } from '../FormContext';
 import RecordSection from '../RecordSection';
 
@@ -11,6 +10,7 @@ import LiftMenu from './LiftMenu';
 interface LiftSectionProps {
   ei: number;
   li?: number;
+  lift: Lift;
 }
 const useStyles = createStyles((theme) => ({
   liftContainer: {
@@ -19,20 +19,13 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius.md,
   },
 }));
-export default function LiftSection({ ei, li }: LiftSectionProps) {
+export default function LiftSection({ ei, li, lift }: LiftSectionProps) {
   const { classes } = useStyles();
   const form = useProgramFormContext();
-  const [blockTab, setBlock] = useAtom(blockAtom);
-  const [weekTab, setWeek] = useAtom(weekAtom);
-  const [dayTab, setDay] = useAtom(dayAtom);
+
   const path = getPath();
   const liftPath = li === undefined ? `${path}.${ei}` : `${path}.${ei}.lifts.${li}`;
   const recordsPath = `${liftPath}.records`;
-  // might have to test undefined
-  const lift =
-    li === undefined
-      ? form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei]
-      : form.values.blocks[blockTab].weeks[weekTab].days[dayTab].exercises[ei].lifts[li];
 
   function deleteLift() {
     li === undefined

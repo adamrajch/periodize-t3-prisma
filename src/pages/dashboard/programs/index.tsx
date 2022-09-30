@@ -9,11 +9,18 @@ export default function ProgramsHome() {
     <DashboardShell>
       <Container>
         <Stack>
-          <Title>My Programs</Title>
+          <div>
+            <Link href="/dashboard/active-programs">
+              <Title sx={{ cursor: 'pointer', display: 'inline' }}>My Programs</Title>
+            </Link>
+          </div>
+
           <UserPrograms />
-          <Link href="/dashboard/active-programs">
-            <Title>Subscribed Programs</Title>
-          </Link>
+          <div>
+            <Link href="/dashboard/active-programs">
+              <Title sx={{ cursor: 'pointer' }}>Subscribed Programs</Title>
+            </Link>
+          </div>
 
           <SubscribedPrograms />
         </Stack>
