@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Table, Text } from '@mantine/core';
+import { ActionIcon, Group, Table, Text, Title } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { IconEdit, IconTrash } from '@tabler/icons';
 import NextError from 'next/error';
@@ -74,16 +74,23 @@ export default function SubscribedPrograms() {
     );
   });
   return (
-    <Table verticalSpacing="lg" highlightOnHover>
-      <thead>
-        <tr>
-          <th>title</th>
-          <th>createdAt</th>
-          <th>updatedAt</th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>{activeProgramRows}</tbody>
-    </Table>
+    <>
+      <div>
+        <Link href="/dashboard/active-programs">
+          <Title sx={{ cursor: 'pointer' }}>Subscribed Programs</Title>
+        </Link>
+      </div>
+      <Table verticalSpacing="lg" highlightOnHover>
+        <thead>
+          <tr>
+            <th>title</th>
+            <th>createdAt</th>
+            <th>updatedAt</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>{activeProgramRows}</tbody>
+      </Table>
+    </>
   );
 }

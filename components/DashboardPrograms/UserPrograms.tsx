@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Group, Table, Text } from '@mantine/core';
+import { ActionIcon, Button, Group, Table, Text, Title } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
 import { IconEdit, IconTrash } from '@tabler/icons';
 import NextError from 'next/error';
@@ -114,16 +114,23 @@ export default function UserPrograms() {
     );
   });
   return (
-    <Table verticalSpacing="lg" highlightOnHover>
-      <thead>
-        <tr>
-          <th>title</th>
-          <th>created</th>
-          <th>updated</th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </Table>
+    <>
+      <div>
+        <Link href="/dashboard/active-programs">
+          <Title sx={{ cursor: 'pointer', display: 'inline' }}>My Programs</Title>
+        </Link>
+      </div>
+      <Table verticalSpacing="lg" highlightOnHover>
+        <thead>
+          <tr>
+            <th>title</th>
+            <th>created</th>
+            <th>updated</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
+    </>
   );
 }
